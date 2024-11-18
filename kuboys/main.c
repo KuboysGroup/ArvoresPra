@@ -91,3 +91,48 @@ int main() {
 //     percorrerProfundidadeInOrder(a, a->raiz,visitar);
 //     printf("\n");
 // }
+
+// Função para mostrar a árvore (in-order)
+
+
+
+
+// TESTE ARVORE AVL
+// void mostrar(NoAVL* no, int nivel) {
+//     if (no != NULL) {
+//         mostrar(no->direita, nivel + 1);
+//         for (int i = 0; i < nivel; i++) printf("   ");
+//         printf("%d\n", no->valor);
+//         mostrar(no->esquerda, nivel + 1);
+//     }
+// }
+
+// int main() {
+//     // Inicializa a árvore
+//     ArvoreAVL* arvore = criar();
+//     int valores[] = {10, 20, 30, 15, 25, 5, 1, 40, 50, 35};
+//     int tamanho = sizeof(valores) / sizeof(valores[0]);
+//     int contador_comparacoes = 0, contagem_insercao_avl;
+
+//     printf("Inserindo valores na árvore AVL:\n");
+//     for (int i = 0; i < tamanho; i++) {
+//         contagem_insercao_avl = 0; // Zera o contador para a próxima inserção
+//         adicionar(arvore, valores[i], &contagem_insercao_avl);
+//         printf("Comparações para inserir %d: %d\n", valores[i], contagem_insercao_avl);
+//         contador_comparacoes += contagem_insercao_avl;
+//     }
+
+//     printf("\nEstrutura da árvore (rotacionada 90 graus):\n");
+//     mostrar(arvore->raiz, 0);
+
+//     printf("\nTotal de comparações realizadas: %d\n", contador_comparacoes);
+
+//     // Percorre a árvore (in-order)
+//     printf("\nElementos em ordem crescente:\n");
+//     percorrer(arvore->raiz, visitar, &contador_comparacoes);
+//     printf("\n");
+
+//     // Liberação de memória
+//     // Implementar liberação de memória para a árvore, se necessário
+//     return 0;
+// }
