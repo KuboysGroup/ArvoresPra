@@ -1,24 +1,27 @@
 enum coloracao { Vermelho, Preto };
 typedef enum coloracao Cor;
 
-typedef struct no {
-    struct no* pai;
-    struct no* esquerda;
-    struct no* direita;
+typedef struct NoRN {
+    struct NoRN* pai;
+    struct NoRN* esquerda;
+    struct NoRN* direita;
     Cor cor;
     int valor;
 } NoRN;
 
-typedef struct arvore {
-    struct no* raiz;
-    struct no* nulo; 
+typedef struct ArvoreRN {
+    struct NoRN* raiz;
+    struct NoRN* nulo; 
 } ArvoreRN;
 
-NoRN* criarNo(ArvoreRN*, NoRN*, int);
-void balancear(ArvoreRN*, NoRN*);
-void rotacionarEsquerda(ArvoreRN*, NoRN*);
-void rotacionarDireita(ArvoreRN*, NoRN*);
-ArvoreRN* criar();
-int vazia(ArvoreRN*);
-NoRN* adicionar(ArvoreRN*, int);
-NoRN* localizar(ArvoreRN* arvore, int valor);
+ArvoreRN* criarArvoreRN();
+int vaziaRN(ArvoreRN* arvore);                                     // Verifica se a árvore está vazia
+NoRN* criarNoRN(ArvoreRN* arvore, NoRN* pai, int valor);           // Cria um novo nó na árvore
+NoRN* adicionarRN(ArvoreRN* arvore, int valor, long int* contador);  // Adiciona um nó à árvore e conta as comparações
+NoRN* localizarRN(ArvoreRN* arvore, int valor, long int* contador); // Localiza um nó na árvore e conta as comparações
+NoRN* removerRN(ArvoreRN* arvore, int valor, long int* contador);   // Remove um nó da árvore e conta as comparações
+void percorrerProfundidadeInOrder(ArvoreRN* arvore, NoRN* no, void (*callback)(int), long int* contador); // Percorre a árvore em ordem
+void balancearRN(ArvoreRN* arvore, NoRN* no, long int* contador);   // Balanceia a árvore após inserção
+void rotacionarEsquerda(ArvoreRN* arvore, NoRN* no, long int* contador); // Realiza rotação à esquerda
+void rotacionarDireita(ArvoreRN* arvore, NoRN* no, long int* contador);  // Realiza rotação à direita
+void balancearRemocao(ArvoreRN* arvore, NoRN* no, long int* contador); // Balanceia a árvore após remoção

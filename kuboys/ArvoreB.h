@@ -1,8 +1,8 @@
-typedef struct no {
+typedef struct NoB {
     int total;
     int* chaves;
-    struct no** filhos;
-    struct no* pai; 
+    struct NoB** filhos;
+    struct NoB* pai; 
 } NoB;
 
 typedef struct arvoreB {
@@ -10,18 +10,24 @@ typedef struct arvoreB {
   int ordem;
 } ArvoreB;
 
-ArvoreB* criaArvore(int);
-int retornarContador();
-NoB* criaNo(ArvoreB*);
-void percorreArvore(NoB*);
-int pesquisaBinaria(NoB*, int);
-int localizaChave(ArvoreB*, int);
-NoB* localizaNo(ArvoreB*, int);
-void adicionaChaveNo(NoB*, NoB*, int);
-int transbordo(ArvoreB*,NoB*);
-NoB* divideNo(ArvoreB*, NoB*);
-void adicionaChaveRecursivo(ArvoreB*, NoB*, NoB*, int);
-void adicionaChave(ArvoreB*, int);
-//trocar pra struct, usando só uma função
-int obterAdicoesArvoreB(int* vet, int ordem);
-int obterRemocoesArvoreB(int* vet, int ordem);
+// Funções básicas
+ArvoreB* criaArvoreB(int ordem);
+NoB* criaNo(ArvoreB* arvore);
+void percorreArvore(NoB* no, long int* contador);
+int pesquisaBinaria(NoB* no, int chave, long int* contador);
+
+// Funções de busca
+NoB* localizaNo(ArvoreB* arvore, int chave, long int* contador);
+
+// Funções de inserção
+void adicionaChaveNo(NoB* no, NoB* novo, int chave, long int* contador);
+void adicionaChaveRecursivo(ArvoreB* arvore, NoB* no, NoB* novo, int chave, long int* contador);
+void adicionaChave(ArvoreB* arvore, int chave, long int* contador);
+
+// Funções de remoção
+void removeChaveNo(NoB* no, int indice, long int* contador);
+void removeChave(ArvoreB* arvore, int chave, long int* contador);
+
+// Funções de contagem de operações
+int obterAdicoesArvoreB(int* vet, int vetSize, int ordem, long int* contador);
+int obterRemocoesArvoreB(int* vet, int vetSize, int ordem, long int* contador);
