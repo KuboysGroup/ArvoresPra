@@ -6,8 +6,76 @@
 #include "ArvoreB.h"  // Assumindo que você tem uma implementação da Árvore B
 #include <locale.h>
 
-// #define MAX_SIZE 10000
-// #define AMOSTRAS 10
+#define MAX_CONJUNTO 10000
+#define AMOSTRAS 10
+
+void gerarConjuntoAleatorio(int* conjunto, int tamanho) {
+    for (int i = 0; i < tamanho; i++) {
+        conjunto[i] = rand() % (tamanho * 10); // Gera valores entre 0 e tamanho*10
+    }
+}
+
+int main() {
+    srand(time(NULL)); // Inicializa o gerador de números aleatórios
+
+    FILE* arquivoInsercao = fopen("resultados_insercao_avl.csv", "w");
+    FILE* arquivoRemocao = fopen("resultados_remocao_avl.csv", "w");
+
+    if (!arquivoInsercao || !arquivoRemocao) {
+        printf("Erro ao abrir arquivos de saída.\n");
+        return 1;
+    }
+
+    fprintf(arquivoInsercao, "Tamanho,MediaComparacoes\n");
+    fprintf(arquivoRemocao, "Tamanho,MediaComparacoes\n");
+
+    for (int tamanho = 1; tamanho <= MAX_CONJUNTO; tamanho += 100) { // Incremento de 100 para desempenho
+        long int totalComparacoesInsercao = 0;
+        long int totalComparacoesRemocao = 0;
+
+        for (int amostra = 0; amostra < AMOSTRAS; amostra++) {
+            int* conjunto = (int*)malloc(tamanho * sizeof(int));
+            gerarConjuntoAleatorio(conjunto, tamanho);
+
+            ArvoreAVL* arvore = criarArvoreAVL();
+            long int contadorInsercao = 0;
+            long int contadorRemocao = 0;
+
+            // Inserção
+            for (int i = 0; i < tamanho; i++) {
+                adicionar(arvore, conjunto[i], &contadorInsercao);
+            }
+
+            // Remoção
+            // for (int i = 0; i < tamanho; i++) {
+            //     remover(arvore, conjunto[i], &contadorRemocao);
+            // }
+
+            totalComparacoesInsercao += contadorInsercao;
+            totalComparacoesRemocao += contadorRemocao;
+
+            free(conjunto);
+            free(arvore); // Implementação da função de desalocar árvore é necessária
+        }
+
+        // Calcula média de comparações para o tamanho atual
+        double mediaComparacoesInsercao = (double)totalComparacoesInsercao / AMOSTRAS;
+        double mediaComparacoesRemocao = (double)totalComparacoesRemocao / AMOSTRAS;
+
+        // Salva os resultados em arquivos CSV
+        fprintf(arquivoInsercao, "%d,%.2f\n", tamanho, mediaComparacoesInsercao);
+        fprintf(arquivoRemocao, "%d,%.2f\n", tamanho, mediaComparacoesRemocao);
+
+        printf("Tamanho: %d | Inserção Média: %.2f | Remoção Média: %.2f\n",
+               tamanho, mediaComparacoesInsercao, mediaComparacoesRemocao);
+    }
+
+    fclose(arquivoInsercao);
+    fclose(arquivoRemocao);
+
+    printf("Resultados salvos em 'resultados_insercao_avl.csv' e 'resultados_remocao_avl.csv'.\n");
+    return 0;
+}
 
 // // Função para gerar números aleatórios
 // void gerarChavesAleatorias(int *chaves, int tamanho) {
@@ -23,7 +91,7 @@
 
 //     // Árvores
 //     ArvoreAVL *avl = criarArvoreAVL();
-//     ArvoreRN *rubroNegra = criarArvoreRN();
+//     // ArvoreRN *rubroNegra = criarArvoreRN();
 //     ArvoreB *b1 = criaArvoreB(1);
 //     ArvoreB *b5 = criaArvoreB(5);
 //     ArvoreB *b10 = criaArvoreB(10);
@@ -31,19 +99,19 @@
 //     // Teste de inserção
 //     for (int i = 0; i < tamanho; i++) {
 //         adicionar(avl, chaves[i], &contadorAVL);
-//         adicionarRN(rubroNegra, chaves[i], &contadorRN);
-//         adicionaChave(b1, chaves[i], &contadorB1);
-//         adicionaChave(b5, chaves[i], &contadorB5);
-//         adicionaChave(b10, chaves[i], &contadorB10);
+//         // adicionarRN(rubroNegra, chaves[i], &contadorRN);
+//         // adicionaChave(b1, chaves[i], &contadorB1);
+//         // adicionaChave(b5, chaves[i], &contadorB5);
+//         // adicionaChave(b10, chaves[i], &contadorB10);
 //     }
 
 //     // Teste de remoção
 //     for (int i = 0; i < tamanho; i++) {
 //         remover(avl, chaves[i], &contadorAVL);
-//         removerRN(rubroNegra, chaves[i], &contadorRN);
-//         removeChave(b1, chaves[i], &contadorB1);
-//         removeChave(b5, chaves[i], &contadorB5);
-//         removeChave(b10, chaves[i], &contadorB10);
+//         // removerRN(rubroNegra, chaves[i], &contadorRN);
+//         // removeChave(b1, chaves[i], &contadorB1);
+//         // removeChave(b5, chaves[i], &contadorB5);
+//         // removeChave(b10, chaves[i], &contadorB10);
 //     }
 
 //     // Resultados
@@ -56,10 +124,10 @@
 
 //     // Libera memória
 //     free(avl);
-//     free(rubroNegra);
-//     free(b1);
-//     free(b5);
-//     free(b10);
+//     // free(rubroNegra);
+//     // free(b1);
+//     // free(b5);
+//     // free(b10);
 // }
 
 // int main() {
@@ -182,7 +250,7 @@
 
 
 
-// TESTE ARVORE AVL
+// // TESTE ARVORE AVL
 // void mostrar(NoAVL* no, int nivel) {
 //     if (no != NULL) {
 //         mostrar(no->direita, nivel + 1);
@@ -194,23 +262,25 @@
 
 // int main() {
 //     // Inicializa a árvore
+//     setlocale(LC_ALL, "Portuguese");
+
 //     ArvoreAVL* arvore = criarArvoreAVL();
 //     int valores[] = {10, 20, 30, 15, 25, 5, 1, 40, 50, 35};
 //     int tamanho = sizeof(valores) / sizeof(valores[0]);
-//     int contador_comparacoes = 0, contagem_insercao_avl;
+//     long int contador_comparacoes = 0, contagem_insercao_avl;
 
-//     printf("Inserindo valores na árvore AVL:\n");
+//     printf("Inserindo valores na arvore AVL:\n");
 //     for (int i = 0; i < tamanho; i++) {
 //         contagem_insercao_avl = 0; // Zera o contador para a próxima inserção
 //         adicionar(arvore, valores[i], &contagem_insercao_avl);
-//         printf("Comparações para inserir %d: %d\n", valores[i], contagem_insercao_avl);
+//         printf("Comparacoes para inserir %d: %d\n", valores[i], contagem_insercao_avl);
 //         contador_comparacoes += contagem_insercao_avl;
 //     }
 
-//     printf("\nEstrutura da árvore (rotacionada 90 graus):\n");
+//     printf("\nEstrutura da arvore (rotacionada 90 graus):\n");
 //     mostrar(arvore->raiz, 0);
 
-//     printf("\nTotal de comparações realizadas: %d\n", contador_comparacoes);
+//     printf("\nTotal de comparacoes realizadas: %d\n", contador_comparacoes);
 
 //     // Percorre a árvore (in-order)
 //     printf("\nElementos em ordem crescente:\n");
@@ -220,9 +290,9 @@
 //     printf("\nRemovendo 15...\n");
 //     remover(arvore, 15, &contador_comparacoes);
 
-//     printf("\nÁrvore após remoção:\n");
+//     printf("\nArvore após remocao:\n");
 //     mostrar(arvore->raiz, 0);
-//     printf("\nNúmero total de comparações: %d\n", contador_comparacoes);
+//     printf("\nNumero total de comparacoes: %d\n", contador_comparacoes);
 
 //     // Liberação de memória
 //     // Implementar liberação de memória para a árvore, se necessário
@@ -278,63 +348,63 @@
 
 // TESTE ARVORE RUBRO-NEGRA
 
-void imprimirValor(int valor) {
-    printf("%d ", valor);
-}
+// void imprimirValor(int valor) {
+//     printf("%d ", valor);
+// }
 
-int main() {
-    setlocale(LC_ALL, "Portuguese");
+// int main() {
+//     setlocale(LC_ALL, "Portuguese");
 
-    ArvoreRN* arvore = criarArvoreRN();  // Cria uma nova árvore Rubro-Negra
-    long int contador = 0;        // Variável para contar as comparações
+//     ArvoreRN* arvore = criarArvoreRN();  // Cria uma nova árvore Rubro-Negra
+//     long int contador = 0;        // Variável para contar as comparações
     
-    printf("Adicionando valores na árvore:\n");
+//     printf("Adicionando valores na árvore:\n");
 
-    // Inserção de valores
-    adicionarRN(arvore, 10, &contador);
-    adicionarRN(arvore, 20, &contador);
-    adicionarRN(arvore, 15, &contador);
-    adicionarRN(arvore, 30, &contador);
-    adicionarRN(arvore, 5, &contador);
-    adicionarRN(arvore, 25, &contador);
+//     // Inserção de valores
+//     adicionarRN(arvore, 10, &contador);
+//     adicionarRN(arvore, 20, &contador);
+//     adicionarRN(arvore, 15, &contador);
+//     adicionarRN(arvore, 30, &contador);
+//     adicionarRN(arvore, 5, &contador);
+//     adicionarRN(arvore, 25, &contador);
 
-    printf("\nNúmero total de comparações após inserção: %ld\n", contador);
+//     printf("\nNúmero total de comparações após inserção: %ld\n", contador);
 
-    // Resetando o contador para a busca
-    contador = 0;
+//     // Resetando o contador para a busca
+//     contador = 0;
 
-    // Buscando um valor na árvore
-    printf("\nBuscando o valor 15 na árvore:\n");
-    NoRN* no = localizarRN(arvore, 15, &contador);
-    if (no != arvore->nulo) {
-        printf("Valor %d encontrado!\n", no->valor);
-    } else {
-        printf("Valor não encontrado.\n");
-    }
-    printf("Número de comparações durante a busca: %ld\n", contador);
+//     // Buscando um valor na árvore
+//     printf("\nBuscando o valor 15 na árvore:\n");
+//     NoRN* no = localizarRN(arvore, 15, &contador);
+//     if (no != arvore->nulo) {
+//         printf("Valor %d encontrado!\n", no->valor);
+//     } else {
+//         printf("Valor não encontrado.\n");
+//     }
+//     printf("Número de comparações durante a busca: %ld\n", contador);
 
-    // Resetando o contador para remoção
-    contador = 0;
+//     // Resetando o contador para remoção
+//     contador = 0;
 
-    // Removendo um valor da árvore
-    printf("\nRemovendo o valor 20 da árvore:\n");
-    no = removerRN(arvore, 20, &contador);
-    printf("Número de comparações durante a remoção: %ld\n", contador);
+//     // Removendo um valor da árvore
+//     printf("\nRemovendo o valor 20 da árvore:\n");
+//     no = removerRN(arvore, 20, &contador);
+//     printf("Número de comparações durante a remoção: %ld\n", contador);
 
-    // Percorrendo a árvore em ordem (InOrder)
-    printf("\nÁrvore após remoção (InOrder): ");
-    contador = 0;
-    percorrerProfundidadeInOrder(arvore, arvore->raiz, imprimirValor, &contador);
-    printf("\nNúmero de comparações durante o percurso em ordem: %ld\n", contador);
+//     // Percorrendo a árvore em ordem (InOrder)
+//     printf("\nÁrvore após remoção (InOrder): ");
+//     contador = 0;
+//     percorrerProfundidadeInOrder(arvore, arvore->raiz, imprimirValor, &contador);
+//     printf("\nNúmero de comparações durante o percurso em ordem: %ld\n", contador);
 
-    // Teste de remoção não encontrada
-    contador = 0;
-    printf("\nTentando remover o valor 100 da árvore (valor não existente):\n");
-    no = removerRN(arvore, 100, &contador);
-    printf("Número de comparações durante a remoção de valor não existente: %ld\n", contador);
+//     // Teste de remoção não encontrada
+//     contador = 0;
+//     printf("\nTentando remover o valor 100 da árvore (valor não existente):\n");
+//     no = removerRN(arvore, 100, &contador);
+//     printf("Número de comparações durante a remoção de valor não existente: %ld\n", contador);
 
-    // Finalizando
-    free(arvore);
+//     // Finalizando
+//     free(arvore);
 
-    return 0;
-}
+//     return 0;
+// }

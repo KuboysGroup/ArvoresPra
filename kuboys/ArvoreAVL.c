@@ -54,7 +54,7 @@ void adicionar(ArvoreAVL* arvore, int valor, long int* contador) {
 
 void remover(ArvoreAVL* arvore, int valor, long int* contador) {
     (*contador)++;
-    NoAVL* no = localizar(arvore->raiz, valor, contador);
+    NoAVL* no = localizar(arvore->raiz, valor, contador); // Localiza o nó com o valor
 
     if (no == NULL) {
         printf("Valor %d não encontrado na árvore.\n", valor);
@@ -111,7 +111,6 @@ void remover(ArvoreAVL* arvore, int valor, long int* contador) {
     // Rebalanceamento após a remoção
     (*contador)++;
     NoAVL* atual = (no != NULL) ? no->pai : arvore->raiz;
-    printf("%d", atual->valor);
     while (atual != NULL) {
         (*contador)++;
         atual->altura = maximo(altura(atual->esquerda, contador), altura(atual->direita, contador), contador) + 1;
@@ -139,7 +138,6 @@ void remover(ArvoreAVL* arvore, int valor, long int* contador) {
     free(no);
 }
 
-
 void balanceamento(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
     (*contador)++;
     while (no != NULL) {
@@ -150,18 +148,14 @@ void balanceamento(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
 
         if (fator > 1) { 
             if (fb(no->esquerda, contador) > 0) {
-                printf("RSD(%d)\n",no->valor);
                 rsd(arvore, no, contador); 
             } else {
-                printf("RDD(%d)\n",no->valor);
                 rdd(arvore, no, contador); 
             }
         } else if (fator < -1) { 
             if (fb(no->direita, contador) < 0) {
-                printf("RSE(%d)\n",no->valor);
                 rse(arvore, no, contador); 
             } else {
-                printf("RDE(%d)\n",no->valor);
                 rde(arvore, no, contador);
             }
         }
