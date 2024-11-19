@@ -9,7 +9,7 @@ ArvoreAVL* criarArvoreAVL() {
     return arvore;
 }
 
-void adicionar(ArvoreAVL* arvore, int valor, int* contador) {
+void adicionar(ArvoreAVL* arvore, int valor, long int* contador) {
     NoAVL* no = arvore->raiz;
     (*contador)++; // CONTAGEM COMPARAÇÃO INSERÇÃO
     while (no != NULL) {
@@ -52,7 +52,7 @@ void adicionar(ArvoreAVL* arvore, int valor, int* contador) {
     }
 }
 
-void remover(ArvoreAVL* arvore, int valor, int* contador) {
+void remover(ArvoreAVL* arvore, int valor, long int* contador) {
     (*contador)++;
     NoAVL* no = localizar(arvore->raiz, valor, contador);
 
@@ -140,7 +140,7 @@ void remover(ArvoreAVL* arvore, int valor, int* contador) {
 }
 
 
-void balanceamento(ArvoreAVL* arvore, NoAVL* no, int* contador) {
+void balanceamento(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
     (*contador)++;
     while (no != NULL) {
         (*contador) += 3;
@@ -170,7 +170,7 @@ void balanceamento(ArvoreAVL* arvore, NoAVL* no, int* contador) {
     }
 }
 
-int altura(NoAVL* no, int* contador) {
+int altura(NoAVL* no, long int* contador) {
     if (contador != NULL) {
         (*contador)++;
     }
@@ -180,7 +180,7 @@ int altura(NoAVL* no, int* contador) {
 }
 
 
-int fb(NoAVL* no, int* contador) {
+int fb(NoAVL* no, long int* contador) {
     int esquerda = 0,direita = 0;
   
     (*contador)++;
@@ -196,7 +196,7 @@ int fb(NoAVL* no, int* contador) {
     return esquerda - direita;
 }
 
-NoAVL* rse(ArvoreAVL* arvore, NoAVL* no, int* contador) {
+NoAVL* rse(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
     NoAVL* pai = no->pai;
     NoAVL* direita = no->direita;
 
@@ -229,7 +229,7 @@ NoAVL* rse(ArvoreAVL* arvore, NoAVL* no, int* contador) {
     return direita;
 }
 
-NoAVL* rsd(ArvoreAVL* arvore, NoAVL* no, int* contador) {
+NoAVL* rsd(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
     NoAVL* pai = no->pai;
     NoAVL* esquerda = no->esquerda;
 
@@ -262,17 +262,17 @@ NoAVL* rsd(ArvoreAVL* arvore, NoAVL* no, int* contador) {
     return esquerda;
 }
 
-NoAVL* rde(ArvoreAVL* arvore, NoAVL* no, int* contador) {
+NoAVL* rde(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
     no->direita = rsd(arvore, no->direita, contador);
     return rse(arvore, no, contador);
 }
 
-NoAVL* rdd(ArvoreAVL* arvore, NoAVL* no, int* contador) {
+NoAVL* rdd(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
     no->esquerda = rse(arvore, no->esquerda, contador);
     return rsd(arvore, no, contador);
 }
 
-int maximo(int a, int b, int* contador) {
+int maximo(int a, int b, long int* contador) {
     if (contador != NULL) {
         (*contador)++;
     }
@@ -282,12 +282,12 @@ int maximo(int a, int b, int* contador) {
 }
 
 
-int vazia(ArvoreAVL* arvore, int *contador) {
+int vazia(ArvoreAVL* arvore, long int *contador) {
     (*contador)++;
     return arvore->raiz == NULL;
 }
 
-NoAVL* localizar(NoAVL* no, int valor, int* contador) {
+NoAVL* localizar(NoAVL* no, int valor, long int* contador) {
     (*contador)++;
     while (no != NULL) {
         (*contador) += 3;
@@ -301,7 +301,7 @@ NoAVL* localizar(NoAVL* no, int valor, int* contador) {
     return NULL;
 }
 
-void percorrer(NoAVL* no, void (*callback)(int), int* contador) {
+void percorrer(NoAVL* no, void (*callback)(int), long int* contador) {
     (*contador)++;
     if (no != NULL) {
         percorrer(no->esquerda,callback, contador);

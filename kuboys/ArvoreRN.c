@@ -70,13 +70,14 @@ NoRN* localizarRN(ArvoreRN* arvore, int valor, long int* contador) {
     (*contador)++;
     if (!vaziaRN(arvore)) {
         NoRN* no = arvore->raiz;
-
         while (no != arvore->nulo) {
             (*contador)++;
             if (no->valor == valor) {
                 return no;
             } else {
+                // printf("%d", valor);
                 no = valor < no->valor ? no->esquerda : no->direita;
+                printf("%d", no->valor);
             }
         }
     }
@@ -291,13 +292,14 @@ NoRN* removerNo(ArvoreRN* arvore, NoRN* no, int valor, long int* contador) {
 
 NoRN* removerRN(ArvoreRN* arvore, int valor, long int* contador) {
     NoRN* no = localizarRN(arvore, valor, contador);
-    
+    printf("%d", no->valor);
+    (*contador)++;
     if (no == arvore->nulo) {
         printf("Valor não encontrado na árvore!\n");
         return NULL;
     }
 
-    (*contador)++;  // Contabiliza a comparação que verifica se o nó foi encontrado ou não
+      // Contabiliza a comparação que verifica se o nó foi encontrado ou não
 
     return removerNo(arvore, no, valor, contador);
 }
