@@ -27,6 +27,7 @@ void adicionaChave(ArvoreB* arvore, int chave, long int* contador);
 // Funções de remoção
 void removeChaveNo(NoB* no, int indice, long int* contador);
 void removeChave(ArvoreB* arvore, int chave, long int* contador);
+void removerChaveRecursivo(ArvoreB* arvore, NoB* noB, int chave, long int* contador);
 
 // Funções de contagem de operações
 int obterAdicoesArvoreB(int* vet, int vetSize, int ordem, long int* contador);

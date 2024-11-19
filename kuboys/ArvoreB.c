@@ -139,35 +139,57 @@ void adicionaChave(ArvoreB* arvore, int chave, long int* contador) {
     adicionaChaveRecursivo(arvore, no, NULL, chave, contador);
 }
 
-// Remove uma chave de um nó
-void removeChaveNo(NoB* no, int indice, long int* contador) {
-    for (int i = indice; i < no->total - 1; i++) {
-        (*contador)++;
-        no->chaves[i] = no->chaves[i + 1];
-        no->filhos[i + 1] = no->filhos[i + 2];
-    }
-    no->total--;
+void removeChave(ArvoreB* arvore, int chave, long int* contador) {
+    contador++;
+    removerChaveRecursivo(arvore, arvore->raiz, chave, contador);
 }
 
-// Função principal de remoção
-void removeChave(ArvoreB* arvore, int chave, long int* contador) {
-    NoB* no = localizaNo(arvore, chave, contador);
-    if (!no) return;
+void removerChaveRecursivo(ArvoreB* arvore, NoB* noB, int chave, long int* contador) {
+    contador++;
 
-    int i = pesquisaBinaria(no, chave, contador);
-    if (i >= no->total || no->chaves[i] != chave) return;
-
-    if (no->filhos[i] == NULL) { // Caso 1: Nó folha
-        removeChaveNo(no, i, contador);
-    } else { // Caso 2: Nó interno
-        NoB* sucessor = no->filhos[i + 1];
-        while (sucessor->filhos[0] != NULL) {
-            sucessor = sucessor->filhos[0];
-        }
-
-        no->chaves[i] = sucessor->chaves[0];
-        removeChave(arvore, sucessor->chaves[0], contador);
+    if (noB == NULL) {
+        return;
     }
+
+    int indice = pesquisaBinaria(noB, chave, contador);
+
+    contador++;
+    if (indice < noB->total && noB->chaves[indice] == chave) {
+        contador++;
+
+        if (noB->filhos[indice] != NULL) {
+            NoB* noSubstituto = noB->filhos[indice + 1];
+
+            contador++;
+            while (noSubstituto->filhos[0] != NULL) {
+                contador++;
+                noSubstituto = noSubstituto->filhos[0];
+            }
+
+            noB->chaves[indice] = noSubstituto->chaves[0];
+
+            removerChaveRecursivo(arvore, noSubstituto, noSubstituto->chaves[0], contador);
+
+        } else {
+            removeChaveNo(noB, indice, contador);
+        }
+    } else {
+        removerChaveRecursivo(arvore, noB->filhos[indice], chave, contador);
+    }
+}
+
+void removeChaveNo(NoB* noB, int indice, long int* contador) {
+    contador++;
+    int i = 0;
+
+    for (i = indice; i < noB->total - 1; i++) {
+        contador++;
+
+        noB->chaves[i] = noB->chaves[i + 1];
+        noB->filhos[i + 1] = noB->filhos[i + 2];
+    }
+
+    noB->total--;
 }
 
 // Interface para inserções

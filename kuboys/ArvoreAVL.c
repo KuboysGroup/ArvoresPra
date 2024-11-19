@@ -11,9 +11,10 @@ ArvoreAVL* criarArvoreAVL() {
 
 void adicionar(ArvoreAVL* arvore, int valor, long int* contador) {
     NoAVL* no = arvore->raiz;
-    (*contador)++; // CONTAGEM COMPARAÇÃO INSERÇÃO
+
+    (*contador)++;
     while (no != NULL) {
-        (*contador) += 3; // CONTAGEM COMPARAÇÃO INSERÇÃO
+        (*contador) += 3;
         if (valor > no->valor) {
             if (no->direita != NULL) {
                 no = no->direita;
@@ -53,109 +54,127 @@ void adicionar(ArvoreAVL* arvore, int valor, long int* contador) {
 }
 
 void remover(ArvoreAVL* arvore, int valor, long int* contador) {
-    (*contador)++;
-    NoAVL* no = localizar(arvore->raiz, valor, contador); // Localiza o nó com o valor
+    NoAVL* no = localizar(arvore->raiz, valor, contador);
 
     if (no == NULL) {
-        printf("Valor %d não encontrado na árvore.\n", valor);
+        printf("Valor %d nao encontrado\n", valor);
         return;
     }
 
-    // Caso 1: Nó sem filhos
+    printf("Removendo %d\n", no->valor);
     (*contador)++;
+
+    // Caso 1: No sem filhos
     if (no->esquerda == NULL && no->direita == NULL) {
+        printf("Caso 1: No sem filhos\n");
         (*contador)++;
-        if (no->pai == NULL) { // Nó é a raiz
-            arvore->raiz = NULL;
+
+        if (no->pai == NULL) {
+            arvore->raiz = NULL; // No eh a raiz
         } else {
-            (*contador)++;
             if (no->pai->esquerda == no) {
+                printf("Atualizando ponteiro esquerdo do pai para NULL\n");
                 no->pai->esquerda = NULL;
             } else {
+                printf("Atualizando ponteiro direito do pai para NULL\n");
                 no->pai->direita = NULL;
             }
         }
-    }
-    // Caso 2: Nó com um único filho
-    else if (no->esquerda == NULL || no->direita == NULL) {
-        (*contador)++;
-        NoAVL* filho = (no->esquerda != NULL) ? no->esquerda : no->direita;
 
+        printf("Liberando no com valor %d\n", no->valor);
+        free(no);
+    }
+    // Caso 2: No com um unico filho
+    else if (no->esquerda != NULL && no->direita == NULL || no->direita != NULL && no->esquerda == NULL) {
+        printf("Caso 2: No com um unico filho\n");
         (*contador)++;
-        if (no->pai == NULL) { // Nó é a raiz
+
+        NoAVL* filho = (no->esquerda != NULL) ? no->esquerda : no->direita;
+        printf("Filho do no removido: %d\n", filho->valor);
+
+        filho->pai = no->pai;
+
+        if (no->pai == NULL) { // No eh a raiz
+            printf("No removido era a raiz, atualizando raiz para o filho\n");
             arvore->raiz = filho;
         } else {
-            (*contador)++;
             if (no->pai->esquerda == no) {
+                printf("Atualizando ponteiro esquerdo do pai para o filho\n");
                 no->pai->esquerda = filho;
             } else {
+                printf("Atualizando ponteiro direito do pai para o filho\n");
                 no->pai->direita = filho;
             }
         }
-        filho->pai = no->pai;
+
+        printf("Liberando no com valor %d\n", no->valor);
+        free(no);
     }
-    // Caso 3: Nó com dois filhos
+    // Caso 3: No com dois filhos
     else {
+        printf("Caso 3: No com dois filhos\n");
         (*contador)++;
+
+        // Encontrar o sucessor (menor valor na subarvore direita)
         NoAVL* sucessor = no->direita;
         while (sucessor->esquerda != NULL) {
-            (*contador)++;
             sucessor = sucessor->esquerda;
         }
-        (*contador)++;
-        no->valor = sucessor->valor; // Substitui o valor do nó a ser removido
-        remover(arvore, sucessor->valor, contador); // Remove o sucessor recursivamente
-        return; // Saída antecipada, pois a remoção já foi tratada
-    }
 
-    // Rebalanceamento após a remoção
-    (*contador)++;
-    NoAVL* atual = (no != NULL) ? no->pai : arvore->raiz;
-    while (atual != NULL) {
-        (*contador)++;
-        atual->altura = maximo(altura(atual->esquerda, contador), altura(atual->direita, contador), contador) + 1;
-        int fator = fb(atual, contador);
+        printf("Sucessor encontrado: %d\n", sucessor->valor);
 
-        (*contador)++;
-        if (fator > 1) { // Desbalanceamento à esquerda
-            (*contador)++;
-            if (fb(atual->esquerda, contador) >= 0) {
-                rsd(arvore, atual, contador);
-            } else {
-                rdd(arvore, atual, contador);
-            }
-        } else if (fator < -1) { // Desbalanceamento à direita
-            (*contador)++;
-            if (fb(atual->direita, contador) <= 0) {
-                rse(arvore, atual, contador);
-            } else {
-                rde(arvore, atual, contador);
-            }
+        // Copiar o valor do sucessor para o no atual
+        no->valor = sucessor->valor;
+
+        // Remover o sucessor
+        if (sucessor->pai->esquerda == sucessor) {
+            printf("Atualizando ponteiro esquerdo do pai do sucessor\n");
+            sucessor->pai->esquerda = sucessor->direita;
+        } else {
+            printf("Atualizando ponteiro direito do pai do sucessor\n");
+            sucessor->pai->direita = sucessor->direita;
         }
 
-        atual = atual->pai;
+        if (sucessor->direita != NULL) {
+            sucessor->direita->pai = sucessor->pai;
+        }
+
+        printf("Liberando sucessor com valor %d\n", sucessor->valor);
+        free(sucessor);
     }
-    free(no);
+
+    // Rebalanceamento apos a remocao
+    printf("Rebalanceando apos remocao\n");
+    balanceamento(arvore, arvore->raiz, contador);
 }
 
 void balanceamento(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
     (*contador)++;
     while (no != NULL) {
         (*contador) += 3;
+        
+        printf("Balanceando no com valor %d\n", no->valor);
 
         no->altura = maximo(altura(no->esquerda, contador), altura(no->direita, contador), contador) + 1;
         int fator = fb(no, contador);
+        printf("Fator de balanceamento do no %d: %d\n", no->valor, fator);
 
         if (fator > 1) { 
+            printf("Desbalanceamento para a esquerda no no %d\n", no->valor);
             if (fb(no->esquerda, contador) > 0) {
+                printf("Rotacao simples a direita (RSD)\n");
                 rsd(arvore, no, contador); 
             } else {
+                printf("Rotacao dupla a direita (RDD)\n");
                 rdd(arvore, no, contador); 
             }
         } else if (fator < -1) { 
+            printf("Desbalanceamento para a direita no no %d\n", no->valor);
             if (fb(no->direita, contador) < 0) {
+                printf("Rotacao simples a esquerda (RSE)\n");
                 rse(arvore, no, contador); 
             } else {
+                printf("Rotacao dupla a esquerda (RDE)\n");
                 rde(arvore, no, contador);
             }
         }
@@ -164,117 +183,137 @@ void balanceamento(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
     }
 }
 
-int altura(NoAVL* no, long int* contador) {
-    if (contador != NULL) {
-        (*contador)++;
-    }
 
-    // Retorna 0 se o nó for nulo (altura de uma subárvore inexistente é 0)
+int altura(NoAVL* no, long int* contador) {
+    (*contador)++;
     return no != NULL ? no->altura : 0;
 }
 
 
 int fb(NoAVL* no, long int* contador) {
-    int esquerda = 0,direita = 0;
-  
     (*contador)++;
-    if (no->esquerda != NULL) {
-        esquerda = no->esquerda->altura;
+    if (no == NULL) {
+        printf("Fator de balanceamento de um no NULL: 0\n");
+        return 0;
     }
 
-    (*contador)++;
-    if (no->direita != NULL) {
-        direita = no->direita->altura;
-    }
-  
-    return esquerda - direita;
+    int alturaEsquerda = altura(no->esquerda, contador);
+    int alturaDireita = altura(no->direita, contador);
+    int fator = alturaEsquerda - alturaDireita;
+    printf("Fator de balanceamento do no %d: esquerda (%d) - direita (%d) = %d\n", 
+            no->valor, alturaEsquerda, alturaDireita, fator);
+    return fator;
 }
 
-NoAVL* rse(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
-    NoAVL* pai = no->pai;
-    NoAVL* direita = no->direita;
+void rse(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
+    printf("Executando rotacao simples a esquerda (RSE) no no com valor %d\n", no->valor);
 
-    (*contador)++;
-    if (direita->esquerda != NULL) {
-        direita->esquerda->pai = no;
-    } 
-  
-    no->direita = direita->esquerda;
-    no->pai = direita;
+    NoAVL* novoRaiz = no->direita;
+    if (novoRaiz == NULL) {
+        printf("Nao ha no direito para realizar a rotacao simples\n");
+        return;
+    }
 
-    direita->esquerda = no;
-    direita->pai = pai;
+    // Armazenando o filho esquerdo do novoRaiz
+    NoAVL* filhoEsquerdo = novoRaiz->esquerda;
+    novoRaiz->esquerda = no;
+    no->direita = filhoEsquerdo;
 
-    (*contador)++;
-    if (pai == NULL) {
-        arvore->raiz = direita;
+    // Atualizando o ponteiro do filho esquerdo se existir
+    if (filhoEsquerdo != NULL) {
+        filhoEsquerdo->pai = no;
+    }
+
+    // Atualizando o ponteiro do pai
+    novoRaiz->pai = no->pai;
+    if (no->pai == NULL) {
+        arvore->raiz = novoRaiz;
+    } else if (no->pai->esquerda == no) {
+        no->pai->esquerda = novoRaiz;
     } else {
-        (*contador)++;
-        if (pai->esquerda == no) {
-            pai->esquerda = direita;
-        } else {
-            pai->direita = direita;
-        }
+        no->pai->direita = novoRaiz;
     }
 
-    no->altura = maximo(altura(no->esquerda, contador), altura(no->direita, contador), contador) + 1;
-    direita->altura = maximo(altura(direita->esquerda, contador), altura(direita->direita, contador), contador) + 1;
+    // Atualizando o ponteiro de no para novoRaiz
+    no->pai = novoRaiz;
 
-    return direita;
+    printf("Novo raiz apos rotacao simples: %d\n", novoRaiz->valor);
+    printf("Rotacao simples a esquerda concluida\n");
+
+    // Recalcular altura e fatores de balanceamento
+    no->altura = maximo(altura(no->esquerda, contador), altura(no->direita, contador), contador) + 1;
+    novoRaiz->altura = maximo(altura(novoRaiz->esquerda, contador), altura(novoRaiz->direita, contador), contador) + 1;
 }
 
-NoAVL* rsd(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
-    NoAVL* pai = no->pai;
-    NoAVL* esquerda = no->esquerda;
 
-    (*contador)++;
-    if (esquerda->direita != NULL) {
-        esquerda->direita->pai = no;
-    } 
-  
-    no->esquerda = esquerda->direita;
-    no->pai = esquerda;
-  
-    esquerda->direita = no;
-    esquerda->pai = pai;
+void rsd(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
+    printf("Executando rotacao simples a direita (RSD) no no com valor %d\n", no->valor);
+    
+    NoAVL* novoRaiz = no->esquerda;
+    if (novoRaiz == NULL) {
+        printf("Nao ha no esquerdo para realizar a rotacao simples\n");
+        return;
+    }
 
-    (*contador)++;
-    if (pai == NULL) {
-        arvore->raiz = esquerda;
+    // Armazenando o filho direito do novoRaiz
+    NoAVL* filhoDireita = novoRaiz->direita;
+    novoRaiz->direita = no;
+    no->esquerda = filhoDireita;
+
+    // Atualizando o ponteiro do filho direito se existir
+    if (filhoDireita != NULL) {
+        filhoDireita->pai = no;
+    }
+
+    // Atualizando o ponteiro do pai
+    novoRaiz->pai = no->pai;
+    if (no->pai == NULL) {
+        arvore->raiz = novoRaiz;
+    } else if (no->pai->esquerda == no) {
+        no->pai->esquerda = novoRaiz;
     } else {
-        (*contador)++;
-        if (pai->esquerda == no) {
-            pai->esquerda = esquerda;
-        } else {
-            pai->direita = esquerda;
-        }
+        no->pai->direita = novoRaiz;
     }
 
+    // Atualizando o ponteiro de no para novoRaiz
+    no->pai = novoRaiz;
+
+    printf("Novo raiz apos rotacao simples: %d\n", novoRaiz->valor);
+    printf("Rotacao simples a direita concluida\n");
+
+    // Recalcular altura e fatores de balanceamento
     no->altura = maximo(altura(no->esquerda, contador), altura(no->direita, contador), contador) + 1;
-    esquerda->altura = maximo(altura(esquerda->esquerda, contador), altura(esquerda->direita, contador), contador) + 1;
-
-    return esquerda;
+    novoRaiz->altura = maximo(altura(novoRaiz->esquerda, contador), altura(novoRaiz->direita, contador), contador) + 1;
 }
 
-NoAVL* rde(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
-    no->direita = rsd(arvore, no->direita, contador);
-    return rse(arvore, no, contador);
+
+void rde(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
+    printf("Executando rotacao dupla a esquerda (RDE) no no com valor %d\n", no->valor);
+
+    // Primeiro, realizar a rotação à direita no nó direito
+    rsd(arvore, no->direita, contador);
+
+    // Agora, realizar a rotação à esquerda no nó original
+    rse(arvore, no, contador);
 }
 
-NoAVL* rdd(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
-    no->esquerda = rse(arvore, no->esquerda, contador);
-    return rsd(arvore, no, contador);
+
+
+void rdd(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
+    printf("Executando rotacao dupla a direita (RDD) no no com valor %d\n", no->valor);
+
+    // Primeiro, realizar a rotação à esquerda no nó esquerdo
+    rse(arvore, no->esquerda, contador);
+
+    // Agora, realizar a rotação à direita no nó original
+    rsd(arvore, no, contador);
 }
+
 
 int maximo(int a, int b, long int* contador) {
-    if (contador != NULL) {
-        (*contador)++;
-    }
-
-    // Retorna o maior valor entre 'a' e 'b'
+    (*contador)++;
     return a > b ? a : b;
 }
-
 
 int vazia(ArvoreAVL* arvore, long int *contador) {
     (*contador)++;
@@ -282,13 +321,16 @@ int vazia(ArvoreAVL* arvore, long int *contador) {
 }
 
 NoAVL* localizar(NoAVL* no, int valor, long int* contador) {
-    (*contador)++;
     while (no != NULL) {
-        (*contador) += 3;
+        contador++;
+        contador++;
+
         if (no->valor == valor) {
             return no;
         }
         
+        contador++;
+
         no = valor < no->valor ? no->esquerda : no->direita;
     }
 

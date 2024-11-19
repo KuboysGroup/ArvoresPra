@@ -245,61 +245,106 @@ void balancearRemocao(ArvoreRN* arvore, NoRN* no, long int* contador) {
 }
 
 
-NoRN* removerNo(ArvoreRN* arvore, NoRN* no, int valor, long int* contador) {
-    NoRN* substituto;
+// NoRN* removerNo(ArvoreRN* arvore, NoRN* no, int valor, long int* contador) {
+//     NoRN* substituto;
 
-    if (no->esquerda == arvore->nulo || no->direita == arvore->nulo) {
-        substituto = no;
-    } else {
-        substituto = no->direita;
-        while (substituto->esquerda != arvore->nulo) {
-            (*contador)++;  // Conta a comparação entre a esquerda do substituto e o nulo
-            substituto = substituto->esquerda;
+//     if (no->esquerda == arvore->nulo || no->direita == arvore->nulo) {
+//         substituto = no;
+//     } else {
+//         substituto = no->direita;
+//         while (substituto->esquerda != arvore->nulo) {
+//             (*contador)++;  // Conta a comparação entre a esquerda do substituto e o nulo
+//             substituto = substituto->esquerda;
+//         }
+//     }
+
+//     NoRN* filho = substituto->esquerda != arvore->nulo ? substituto->esquerda : substituto->direita;
+
+//     // Conectar o filho ao pai do nó substituído
+//     filho->pai = substituto->pai;
+
+//     if (substituto->pai == arvore->nulo) {
+//         arvore->raiz = filho; // Se for raiz, filho se torna a nova raiz
+//     } else {
+//         if (substituto == substituto->pai->esquerda) {
+//             (*contador)++;  // Conta a comparação entre o substituto e o pai esquerdo
+//             substituto->pai->esquerda = filho;
+//         } else {
+//             (*contador)++;  // Conta a comparação entre o substituto e o pai direito
+//             substituto->pai->direita = filho;
+//         }
+//     }
+
+//     if (substituto != no) {
+//         (*contador)++;  // Conta a comparação entre o nó e o substituto
+//         no->valor = substituto->valor; // Substituir valor
+//     }
+
+//     // Se o substituto for preto, balanceia a árvore
+//     if (substituto->cor == Preto) {
+//         balancearRemocao(arvore, filho, contador);
+//     }
+
+//     free(substituto);
+//     return filho;
+// }
+
+
+void removerNo(ArvoreRN* arvoreRN, int valor, long int* contador) {
+    NoRN* no = localizarRN(arvoreRN, valor, contador);
+
+    contador++;
+    if (no != NULL) {
+        while (1) {
+            contador++;
+
+            if (no->esquerda == arvoreRN->nulo && no->direita == arvoreRN->nulo) {
+                contador++;
+
+                if (no->pai == arvoreRN->nulo) {
+                    arvoreRN->raiz = arvoreRN->nulo;
+                } else if (no == no->pai->esquerda) {
+                    no->pai->esquerda = arvoreRN->nulo;
+                } else {
+                    no->pai->direita = arvoreRN->nulo;
+                }
+
+                free(no);
+                break;
+
+            } else if (no->esquerda != arvoreRN->nulo && no->direita != arvoreRN->nulo) {
+                NoRN* sucessor = no->direita;
+
+                contador++;
+
+                while (sucessor->esquerda != arvoreRN->nulo) {
+                    contador++;
+                    sucessor = sucessor->esquerda;
+                }
+
+                no->valor = sucessor->valor;
+                no = sucessor;
+
+            } else {
+                contador++;
+
+                NoRN* filho = (no->esquerda != arvoreRN->nulo) ? no->esquerda : no->direita;
+                filho->pai  = no->pai;
+
+                contador++;
+                if (no->pai == arvoreRN->nulo) {
+                    arvoreRN->raiz = filho;
+                } else if (no == no->pai->esquerda) {
+                    no->pai->esquerda = filho;
+                } else {
+                    no->pai->direita = filho;
+                }
+
+                free(no);
+                break;
+            }
         }
+
+        balancearRN(arvoreRN, arvoreRN->raiz, contador);
     }
-
-    NoRN* filho = substituto->esquerda != arvore->nulo ? substituto->esquerda : substituto->direita;
-
-    // Conectar o filho ao pai do nó substituído
-    filho->pai = substituto->pai;
-
-    if (substituto->pai == arvore->nulo) {
-        arvore->raiz = filho; // Se for raiz, filho se torna a nova raiz
-    } else {
-        if (substituto == substituto->pai->esquerda) {
-            (*contador)++;  // Conta a comparação entre o substituto e o pai esquerdo
-            substituto->pai->esquerda = filho;
-        } else {
-            (*contador)++;  // Conta a comparação entre o substituto e o pai direito
-            substituto->pai->direita = filho;
-        }
-    }
-
-    if (substituto != no) {
-        (*contador)++;  // Conta a comparação entre o nó e o substituto
-        no->valor = substituto->valor; // Substituir valor
-    }
-
-    // Se o substituto for preto, balanceia a árvore
-    if (substituto->cor == Preto) {
-        balancearRemocao(arvore, filho, contador);
-    }
-
-    free(substituto);
-    return filho;
-}
-
-
-NoRN* removerRN(ArvoreRN* arvore, int valor, long int* contador) {
-    NoRN* no = localizarRN(arvore, valor, contador);
-    printf("%d", no->valor);
-    (*contador)++;
-    if (no == arvore->nulo) {
-        printf("Valor não encontrado na árvore!\n");
-        return NULL;
-    }
-
-      // Contabiliza a comparação que verifica se o nó foi encontrado ou não
-
-    return removerNo(arvore, no, valor, contador);
 }

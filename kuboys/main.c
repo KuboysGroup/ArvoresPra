@@ -6,76 +6,73 @@
 #include "ArvoreB.h"  // Assumindo que você tem uma implementação da Árvore B
 #include <locale.h>
 
-#define MAX_CONJUNTO 10000
-#define AMOSTRAS 10
+#define AMOSTRAS 10 // Número de amostras para cada teste
+#define TAMANHO 10000 // Quantidade de números por amostra
 
+// Funções de manipulação da árvore (adicionar, remover, criar etc.) devem ser implementadas
+
+// Gera um conjunto de números aleatórios
 void gerarConjuntoAleatorio(int* conjunto, int tamanho) {
     for (int i = 0; i < tamanho; i++) {
         conjunto[i] = rand() % (tamanho * 10); // Gera valores entre 0 e tamanho*10
     }
 }
 
+// Implementação principal
 int main() {
     srand(time(NULL)); // Inicializa o gerador de números aleatórios
 
-    FILE* arquivoInsercao = fopen("resultados_insercao_avl.csv", "w");
-    FILE* arquivoRemocao = fopen("resultados_remocao_avl.csv", "w");
+    FILE* arquivoSaida = fopen("resultado_teste_avl.csv", "w");
 
-    if (!arquivoInsercao || !arquivoRemocao) {
-        printf("Erro ao abrir arquivos de saída.\n");
+    if (!arquivoSaida) {
+        printf("Erro ao abrir arquivo de saída.\n");
         return 1;
     }
 
-    fprintf(arquivoInsercao, "Tamanho,MediaComparacoes\n");
-    fprintf(arquivoRemocao, "Tamanho,MediaComparacoes\n");
+    // Escreve cabeçalho do arquivo CSV
+    fprintf(arquivoSaida, "Nome Arvore,Nome Operacao,Amostra,Quantidade Parametros,Valor,Custo Operacao,Custo Total\n");
 
-    for (int tamanho = 1; tamanho <= MAX_CONJUNTO; tamanho += 100) { // Incremento de 100 para desempenho
-        long int totalComparacoesInsercao = 0;
-        long int totalComparacoesRemocao = 0;
+    for (int amostra = 1; amostra <= AMOSTRAS; amostra++) {
+        int* conjunto = (int*)malloc(TAMANHO * sizeof(int));
+        gerarConjuntoAleatorio(conjunto, TAMANHO);
 
-        for (int amostra = 0; amostra < AMOSTRAS; amostra++) {
-            int* conjunto = (int*)malloc(tamanho * sizeof(int));
-            gerarConjuntoAleatorio(conjunto, tamanho);
+        ArvoreAVL* arvore = criarArvoreAVL(); // Supondo que a função de criação está implementada
+        long int contadorTotalInsercao = 0;
+        long int contadorTotalRemocao = 0;
 
-            ArvoreAVL* arvore = criarArvoreAVL();
-            long int contadorInsercao = 0;
-            long int contadorRemocao = 0;
+        // Inserção
+        for (int i = 0; i < TAMANHO; i++) {
+            long int custoOperacaoInsercao = 0;
+            adicionar(arvore, conjunto[i], &custoOperacaoInsercao);
+            contadorTotalInsercao += custoOperacaoInsercao;
 
-            // Inserção
-            for (int i = 0; i < tamanho; i++) {
-                adicionar(arvore, conjunto[i], &contadorInsercao);
-            }
-
-            // Remoção
-            // for (int i = 0; i < tamanho; i++) {
-            //     remover(arvore, conjunto[i], &contadorRemocao);
-            // }
-
-            totalComparacoesInsercao += contadorInsercao;
-            totalComparacoesRemocao += contadorRemocao;
-
-            free(conjunto);
-            free(arvore); // Implementação da função de desalocar árvore é necessária
+            // Escreve os dados de inserção no CSV
+            fprintf(arquivoSaida, "Arvore AVL,Insercao,%d,%d,%d,%ld,%ld\n",
+                    amostra, i + 1, conjunto[i], custoOperacaoInsercao, contadorTotalInsercao);
         }
 
-        // Calcula média de comparações para o tamanho atual
-        double mediaComparacoesInsercao = (double)totalComparacoesInsercao / AMOSTRAS;
-        double mediaComparacoesRemocao = (double)totalComparacoesRemocao / AMOSTRAS;
+        // Remoção
+        for (int i = 0; i < TAMANHO; i++) {
+            long int custoOperacaoRemocao = 0;
+            remover(arvore, conjunto[i], &custoOperacaoRemocao);
+            contadorTotalRemocao += custoOperacaoRemocao;
 
-        // Salva os resultados em arquivos CSV
-        fprintf(arquivoInsercao, "%d,%.2f\n", tamanho, mediaComparacoesInsercao);
-        fprintf(arquivoRemocao, "%d,%.2f\n", tamanho, mediaComparacoesRemocao);
+            // Escreve os dados de remoção no CSV
+            fprintf(arquivoSaida, "Arvore AVL,Remocao,%d,%d,%d,%ld,%ld\n",
+                    amostra, i + 1, conjunto[i], custoOperacaoRemocao, contadorTotalRemocao);
+        }
 
-        printf("Tamanho: %d | Inserção Média: %.2f | Remoção Média: %.2f\n",
-               tamanho, mediaComparacoesInsercao, mediaComparacoesRemocao);
+        free(conjunto);
+        // Função para desalocar árvore deve ser chamada aqui, se implementada
+        free(arvore);
     }
 
-    fclose(arquivoInsercao);
-    fclose(arquivoRemocao);
+    fclose(arquivoSaida);
 
-    printf("Resultados salvos em 'resultados_insercao_avl.csv' e 'resultados_remocao_avl.csv'.\n");
+    printf("Resultados salvos em 'resultado_teste_avl.csv'.\n");
     return 0;
 }
+
 
 // // Função para gerar números aleatórios
 // void gerarChavesAleatorias(int *chaves, int tamanho) {

@@ -15,10 +15,10 @@ typedef struct arvore {
 void balanceamento(ArvoreAVL*, NoAVL*, long int* contador);
 int altura(NoAVL*, long int* contador);
 int fb(NoAVL*, long int* contador);
-NoAVL* rsd(ArvoreAVL*, NoAVL*, long int* contador);
-NoAVL* rse(ArvoreAVL*, NoAVL*, long int* contador);
-NoAVL* rdd(ArvoreAVL*, NoAVL*, long int* contador);
-NoAVL* rde(ArvoreAVL*, NoAVL*, long int* contador);
+void rsd(ArvoreAVL*, NoAVL*, long int* contador);
+void rse(ArvoreAVL*, NoAVL*, long int* contador);
+void rdd(ArvoreAVL*, NoAVL*, long int* contador);
+void rde(ArvoreAVL*, NoAVL*, long int* contador);
 int maximo(int a, int b, long int* contador);
 ArvoreAVL* criarArvoreAVL();
 int vazia(ArvoreAVL* arvore, long int* contador);
