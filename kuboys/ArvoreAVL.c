@@ -72,7 +72,7 @@ void removerAVL(ArvoreAVL* arvore, int valor, long int* contador) {
     printf("Removendo %d na Arvore AVL\n", no->valor);
 
     // Caso 1: No sem filhos
-    (*contador)++; // INCREMENTO CONTADOR
+    (*contador) += 2; // INCREMENTO CONTADOR
     if (no->esquerda == NULL && no->direita == NULL) {
 
         (*contador)++; // INCREMENTO CONTADOR
@@ -92,7 +92,7 @@ void removerAVL(ArvoreAVL* arvore, int valor, long int* contador) {
     }
     // Caso 2: No com um unico filho
     else if (no->esquerda != NULL && no->direita == NULL || no->direita != NULL && no->esquerda == NULL) {
-        (*contador)++; // INCREMENTO CONTADOR
+        (*contador) += 4; // INCREMENTO CONTADOR
 
         (*contador)++; // INCREMENTO CONTADOR
         NoAVL* filho = (no->esquerda != NULL) ? no->esquerda : no->direita;
@@ -115,7 +115,7 @@ void removerAVL(ArvoreAVL* arvore, int valor, long int* contador) {
     }
     // Caso 3: No com dois filhos
     else {
-        (*contador)++; // INCREMENTO CONTADOR
+        (*contador) += 4; // INCREMENTO CONTADOR
 
         NoAVL* sucessor = no->direita;
 
@@ -165,6 +165,7 @@ void balanceamentoAVL(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
                 rddAVL(arvore, no, contador); 
             }
         } else if (fator < -1) {
+            (*contador)++; // INCREMENTO CONTADOR
 
             (*contador)++; // INCREMENTO CONTADOR
             if (fbAVL(no->direita, contador) < 0) {
@@ -328,4 +329,17 @@ void percorrerAVL(NoAVL* no, void (*callback)(int), long int* contador) {
 
 void visitarAVL(int valor){
     printf("%d ", valor);
+}
+
+void destruirNosAVL(NoAVL* no) {
+    if (no == NULL) return;
+    destruirNosAVL(no->esquerda);
+    destruirNosAVL(no->direita);
+    free(no);
+}
+
+void destruirArvoreAVL(ArvoreAVL* arvore) {
+    if (arvore == NULL) return;
+    destruirNosAVL(arvore->raiz);
+    free(arvore);
 }

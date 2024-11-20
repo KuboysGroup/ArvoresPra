@@ -28,3 +28,7 @@ void adicionarChaveRecursivoB(ArvoreB* arvore, NoB* no, NoB* novo, int chave, lo
 void removerChaveNoB(NoB* no, int indice, long int* contador);
 void removerChaveB(ArvoreB* arvore, int chave, long int* contador);
 void removerChaveRecursivoB(ArvoreB* arvore, NoB* noB, int chave, long int* contador);
+
+// Funções de destruição
+void destruirNosB(NoB* no, int ordem);
+void destruirArvoreB(ArvoreB* arvore);

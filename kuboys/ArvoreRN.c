@@ -59,7 +59,6 @@ NoRN* adicionarNoRN(ArvoreRN* arvore, NoRN* no, int valor, long int* contador) {
 NoRN* adicionarRN(ArvoreRN* arvore, int valor, long int* contador) {
     printf("Adicionando %d na Arvore RN\n", valor);
 
-    (*contador)++; // INCREMENTO CONTADOR
     if (vaziaRN(arvore, contador)) {
         arvore->raiz = criarNoRN(arvore, arvore->nulo, valor);
         arvore->raiz->cor = Preto;
@@ -74,7 +73,6 @@ NoRN* adicionarRN(ArvoreRN* arvore, int valor, long int* contador) {
 }
 
 NoRN* localizarRN(ArvoreRN* arvore, int valor, long int* contador) {
-    (*contador)++; // INCREMENTO CONTADOR
     if (!vaziaRN(arvore, contador)) {
         NoRN* no = arvore->raiz;
 
@@ -108,12 +106,12 @@ void percorrerProfundidadeInOrderRN(ArvoreRN* arvore, NoRN* no, void (*callback)
 
 void balancearRN(ArvoreRN* arvore, NoRN* no, long int* contador) {
 
-    (*contador)++; // INCREMENTO CONTADOR
+    (*contador) += 2; // INCREMENTO CONTADOR
     if (no == arvore->nulo || no == NULL) {
         return;
     }
 
-    (*contador)++; // INCREMENTO CONTADOR
+    (*contador) += 2; // INCREMENTO CONTADOR
     while (no->pai != NULL && no->pai->cor == Vermelho) {
         (*contador)++; // INCREMENTO CONTADOR
 
@@ -224,9 +222,9 @@ void rotacionarDireitaRN(ArvoreRN* arvore, NoRN* no, long int* contador) {
 
 void balancearRemocaoRN(ArvoreRN* arvore, NoRN* no, long int* contador) {
 
-    (*contador)++; // INCREMENTO CONTADOR
+    (*contador) += 2; // INCREMENTO CONTADOR
     while (no != arvore->raiz && no->cor == Preto) {
-        (*contador)++; // INCREMENTO CONTADOR
+        (*contador) += 2; // INCREMENTO CONTADOR
         
         (*contador)++; // INCREMENTO CONTADOR
         if (no == no->pai->esquerda) {
@@ -284,14 +282,14 @@ void removerNoRN(ArvoreRN* arvoreRN, int valor, long int* contador) {
     NoRN* no = localizarRN(arvoreRN, valor, contador);
     printf("Removendo %d na Arvore RN\n", valor);
 
-    (*contador)++; // INCREMENTO CONTADOR
+    (*contador) += 2; // INCREMENTO CONTADOR
     if (no == NULL || no == arvoreRN->nulo) {
         return;
     }
 
     while (1) {
 
-        (*contador) += 3; // INCREMENTO CONTADOR
+        (*contador) += 2; // INCREMENTO CONTADOR
         if (no->esquerda == arvoreRN->nulo && no->direita == arvoreRN->nulo) {
 
             (*contador)++; // INCREMENTO CONTADOR
@@ -311,7 +309,7 @@ void removerNoRN(ArvoreRN* arvoreRN, int valor, long int* contador) {
             break;
 
         } else if (no->esquerda != arvoreRN->nulo && no->direita != arvoreRN->nulo) {
-            (*contador) += 3; // INCREMENTO CONTADOR
+            (*contador) += 2; // INCREMENTO CONTADOR
 
             NoRN* sucessor = no->direita;
 
@@ -325,6 +323,9 @@ void removerNoRN(ArvoreRN* arvoreRN, int valor, long int* contador) {
             no->valor = sucessor->valor;
             no = sucessor;
         } else {
+            (*contador) += 2; // INCREMENTO CONTADOR
+
+            (*contador)++; // INCREMENTO CONTADOR
             NoRN* filho = (no->esquerda != arvoreRN->nulo) ? no->esquerda : no->direita;
             filho->pai = no->pai;
 
@@ -347,4 +348,18 @@ void removerNoRN(ArvoreRN* arvoreRN, int valor, long int* contador) {
     }
 
     balancearRN(arvoreRN, arvoreRN->raiz, contador);
+}
+
+void destruirNosRN(NoRN* no, NoRN* nulo) {
+    if (no == nulo) return; // Nó folha ou sentinela
+    destruirNosRN(no->esquerda, nulo);
+    destruirNosRN(no->direita, nulo);
+    free(no);
+}
+
+void destruirArvoreRN(ArvoreRN* arvore) {
+    if (arvore == NULL) return;
+    destruirNosRN(arvore->raiz, arvore->nulo);
+    free(arvore->nulo); // Liberar o nó sentinela
+    free(arvore);
 }

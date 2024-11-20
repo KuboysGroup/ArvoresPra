@@ -116,7 +116,6 @@ NoB* divideNo(ArvoreB* arvore, NoB* no, long int* contador) {
 void adicionarChaveRecursivoB(ArvoreB* arvore, NoB* no, NoB* novo, int chave, long int* contador) {
     adicionarChaveNoB(no, novo, chave, contador);
 
-    (*contador)++; // INCREMENTO CONTADOR
     if (transbordo(arvore, no, contador)) {
         int promovido = no->chaves[arvore->ordem];
         NoB* novo = divideNo(arvore, no, contador);
@@ -173,7 +172,7 @@ void removerChaveRecursivoB(ArvoreB* arvore, NoB* noB, int chave, long int* cont
 
     int indice = pesquisaBinariaB(noB, chave, contador);
 
-    (*contador)++; // INCREMENTO CONTADOR
+    (*contador) += 2; // INCREMENTO CONTADOR
     if (indice < noB->total && noB->chaves[indice] == chave) {
 
         (*contador)++; // INCREMENTO CONTADOR
@@ -211,4 +210,22 @@ void removerChaveNoB(NoB* noB, int indice, long int* contador) {
     }
 
     noB->total--;
+}
+
+void destruirNosB(NoB* no, int ordem) {
+    if (no == NULL) return;
+
+    for (int i = 0; i <= no->total; i++) {
+        destruirNosB(no->filhos[i], ordem);
+    }
+
+    free(no->chaves);
+    free(no->filhos);
+    free(no);
+}
+
+void destruirArvoreB(ArvoreB* arvore) {
+    if (arvore == NULL) return;
+    destruirNosB(arvore->raiz, arvore->ordem);
+    free(arvore);
 }

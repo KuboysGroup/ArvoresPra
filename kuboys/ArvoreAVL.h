@@ -36,3 +36,7 @@ void removerAVL(ArvoreAVL* arvore, int valor, long int* contador);
 // Funções de travessia
 void percorrerAVL(NoAVL* no, void (*callback)(int), long int* contador);
 void visitarAVL(int valor);
+
+// Funções de destruição
+void destruirNosAVL(NoAVL* no);
+void destruirArvoreAVL(ArvoreAVL* arvore);

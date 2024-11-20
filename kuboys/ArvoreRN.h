@@ -34,3 +34,7 @@ void balancearRemocaoRN(ArvoreRN* arvore, NoRN* no, long int* contador);
 
 // Funções de travessia
 void percorrerProfundidadeInOrderRN(ArvoreRN* arvore, NoRN* no, void (*callback)(int), long int* contador);
+
+// Funções de destruição
+void destruirNosRN(NoRN* no, NoRN* nulo);
+void destruirArvoreRN(ArvoreRN* arvore);
