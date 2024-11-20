@@ -347,7 +347,7 @@ void removerNoRN(ArvoreRN* arvoreRN, int valor, long int* contador) {
         }
     }
 
-    balancearRN(arvoreRN, arvoreRN->raiz, contador);
+    balancearRemocaoRN(arvoreRN, arvoreRN->raiz, contador);
 }
 
 void destruirNosRN(NoRN* no, NoRN* nulo) {

@@ -39,11 +39,11 @@ int main() {
 
         // Inserção
         for (int i = 0; i < TAMANHO; i++) {
-            long int contadorTotalInsercaoAVL = 0, custoOperacaoInsercaoAVL = 0;
-            long int contadorTotalInsercaoRN = 0, custoOperacaoInsercaoRN = 0;
-            long int contadorTotalInsercaoB1 = 0, custoOperacaoInsercaoB1 = 0;
-            long int contadorTotalInsercaoB5 = 0, custoOperacaoInsercaoB5 = 0;
-            long int contadorTotalInsercaoB10 = 0, custoOperacaoInsercaoB10 = 0;
+            long int custoOperacaoInsercaoAVL = 0;
+            long int custoOperacaoInsercaoRN = 0;
+            long int custoOperacaoInsercaoB1 = 0;
+            long int custoOperacaoInsercaoB5 = 0;
+            long int custoOperacaoInsercaoB10 = 0;
 
             adicionarAVL(arvoreAVL, conjunto[i], &custoOperacaoInsercaoAVL);
             adicionarRN(arvoreRN, conjunto[i], &custoOperacaoInsercaoRN);
@@ -65,11 +65,11 @@ int main() {
 
         // Remoção
         for (int i = 0; i < TAMANHO; i++) {
-            long int contadorTotalRemocaoAVL = 0, custoOperacaoRemocaoAVL = 0;
-            long int contadorTotalRemocaoRN = 0, custoOperacaoRemocaoRN = 0;
-            long int contadorTotalRemocaoB1 = 0, custoOperacaoRemocaoB1 = 0;
-            long int contadorTotalRemocaoB5 = 0, custoOperacaoRemocaoB5 = 0;
-            long int contadorTotalRemocaoB10 = 0, custoOperacaoRemocaoB10 = 0;
+            long int custoOperacaoRemocaoAVL = 0;
+            long int custoOperacaoRemocaoRN = 0;
+            long int custoOperacaoRemocaoB1 = 0;
+            long int custoOperacaoRemocaoB5 = 0;
+            long int custoOperacaoRemocaoB10 = 0;
 
             removerAVL(arvoreAVL, conjunto[i], &custoOperacaoRemocaoAVL);
             removerNoRN(arvoreRN, conjunto[i], &custoOperacaoRemocaoRN);
