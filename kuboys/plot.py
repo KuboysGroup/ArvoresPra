@@ -1,21 +1,32 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-dfAdc = pd.read_csv('./AdicaoDataSet.csv')
-fig, ax = plt.subplots(figsize=(10, 6))
+# Carregar os dados do CSV
+df = pd.read_csv("resultado_teste_avl.csv")
 
-ax.plot(dfAdc['Size'], dfAdc['arvoreBO1'], label='Binaria ordem 1')
-ax.plot(dfAdc['Size'], dfAdc['arvoreBO5'], label='Binaria ordem 5')
-ax.plot(dfAdc['Size'], dfAdc['arvoreBO10'], label='Binaria ordem 10')
-ax.plot(dfAdc['Size'], dfAdc['arvoreAvl'], label='AVL')
-ax.plot(dfAdc['Size'], dfAdc['arvoreRb'], label='Rubro Negra')
+# Agrupar e calcular a média do custo de operação por estrutura, operação e quantidade de parâmetros
+agrupado = df.groupby(['Nome Arvore', 'Nome Operacao', 'Quantidade Parametros'])['Custo Operacao'].mean().reset_index()
 
-ax.set_title('Complexidade Algorítmica da operação com arvores')
-ax.set_xlabel('Tamanho do Conjunto de Dados')
-ax.set_ylabel('Esforço computacional (Comparações e Trocas)')
-ax.legend()
-plt.yscale('log')
+# Filtrar os dados por operação
+insercao = agrupado[agrupado['Nome Operacao'] == 'Insercao']
+remocao = agrupado[agrupado['Nome Operacao'] == 'Remocao']
 
-#para visualizar no terminal vs code com extension python pack comente a linha plt.savefig('./sortChart.png') e descomente a 
-#plt.show()
-plt.savefig('./adicaoChart.png')
+# Função para gerar o gráfico
+def plotar_grafico(dados, operacao, titulo, arquivo_saida):
+    plt.figure(figsize=(10, 6))
+    for arvore in dados['Nome Arvore'].unique():
+        dados_arvore = dados[dados['Nome Arvore'] == arvore]
+        plt.plot(dados_arvore['Quantidade Parametros'], dados_arvore['Custo Operacao'], label=arvore)
+    
+    plt.title(titulo)
+    plt.xlabel('Quantidade de Parâmetros')
+    plt.ylabel('Média do Custo de Operação')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(arquivo_saida)
+    plt.show()
+
+# Gerar os gráficos
+plotar_grafico(insercao, 'Insercao', 'Custo de Operação - Inserção', 'grafico_insercao.png')
+plotar_grafico(remocao, 'Remocao', 'Custo de Operação - Remoção', 'grafico_remocao.png')
