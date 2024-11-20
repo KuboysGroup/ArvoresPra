@@ -5,7 +5,7 @@ Alunos: Gabriel Otávio de Barros
         Lorenzo Gadotti Murara Becker Machado
         Otávio Luiz Nandi
 
-Trabalho - Análise da Complexidade Algorítmica das Operações de Adição e Remoção em Árvores AVL, Rubro-negra e B
+Trabalho - Análise da Complexidade Algorítmica nas Operações de Adição e Remoção em Árvores AVL, Rubro-negra e B
 
 O objetivo deste trabalho consiste em analisar a complexidade algorítmica das operações de adição e remoção de nós (considerando o balanceamento) em árvores AVL, rubro-negra e B. No caso da árvore B, devem ser consideradas o parâmetro de ordem da árvore igual a 1, 5 e 10. A análise deve ser realizada considerando a geração de um conjunto de dados (chaves) com tamanho variando entre 1 e 10000. As chaves devem ser geradas reproduzindo um caso médio, isto é, utilizando chaves aleatórias. Para geração das chaves aleatórias, sugere-se o uso da função rand em C considerando uma quantidade de amostra de pelo menos 10 conjuntos para validade estatística, calculando a média dos resultados obtidos.
 

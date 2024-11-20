@@ -80,13 +80,13 @@ int main() {
             fprintf(arquivoSaida, "Arvore AVL,Remocao,%d,%d,%d,%ld\n",
                     amostra, TAMANHO - i, conjunto[i], custoOperacaoRemocaoAVL);
             fprintf(arquivoSaida, "Arvore RN,Remocao,%d,%d,%d,%ld\n",
-                    amostra, TAMANHO - 1, conjunto[i], custoOperacaoRemocaoRN);
+                    amostra, TAMANHO - i, conjunto[i], custoOperacaoRemocaoRN);
             fprintf(arquivoSaida, "Arvore B1,Remocao,%d,%d,%d,%ld\n",
-                    amostra, TAMANHO - 1, conjunto[i], custoOperacaoRemocaoB1); 
+                    amostra, TAMANHO - i, conjunto[i], custoOperacaoRemocaoB1); 
             fprintf(arquivoSaida, "Arvore B5,Remocao,%d,%d,%d,%ld\n",
-                    amostra, TAMANHO - 1, conjunto[i], custoOperacaoRemocaoB5); 
+                    amostra, TAMANHO - i, conjunto[i], custoOperacaoRemocaoB5); 
             fprintf(arquivoSaida, "Arvore B10,Remocao,%d,%d,%d,%ld\n",
-                    amostra, TAMANHO - 1, conjunto[i], custoOperacaoRemocaoB10);            
+                    amostra, TAMANHO - i, conjunto[i], custoOperacaoRemocaoB10);            
         }
 
         destruirArvoreAVL(arvoreAVL);
