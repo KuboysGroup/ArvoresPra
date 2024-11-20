@@ -38,7 +38,7 @@ int main() {
         ArvoreB* arvoreB10 = criarArvoreB(10, &contador);
 
         // Inserção
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < TAMANHO; i++) {
             long int contadorTotalInsercaoAVL = 0, custoOperacaoInsercaoAVL = 0;
             long int contadorTotalInsercaoRN = 0, custoOperacaoInsercaoRN = 0;
             long int contadorTotalInsercaoB1 = 0, custoOperacaoInsercaoB1 = 0;

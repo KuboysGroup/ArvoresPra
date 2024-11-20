@@ -36,7 +36,7 @@ void adicionarAVL(ArvoreAVL* arvore, int valor, long int* contador) {
         }
     }
 
-    printf("Adicionando %d\n", valor);
+    printf("Adicionando %d na Arvore AVL\n", valor);
     NoAVL* novo = malloc(sizeof(NoAVL));
     novo->valor = valor;
     novo->pai = no;
@@ -69,7 +69,7 @@ void removerAVL(ArvoreAVL* arvore, int valor, long int* contador) {
         return;
     }
 
-    printf("Removendo %d\n", no->valor);
+    printf("Removendo %d na Arvore AVL\n", no->valor);
 
     // Caso 1: No sem filhos
     (*contador)++; // INCREMENTO CONTADOR

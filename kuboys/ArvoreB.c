@@ -154,13 +154,13 @@ NoB* localizarNoB(ArvoreB* arvore, int chave, long int* contador) {
 }
 
 void adicionarChaveB(ArvoreB* arvore, int chave, long int* contador) {
-    printf("Adicionando %d\n", chave);
+    printf("Adicionando %d na Arvore B\n", chave);
     NoB* no = localizarNoB(arvore, chave, contador);
     adicionarChaveRecursivoB(arvore, no, NULL, chave, contador);
 }
 
 void removerChaveB(ArvoreB* arvore, int chave, long int* contador) {
-    printf("Removendo %d\n", chave);
+    printf("Removendo %d na Arvore B\n", chave);
     removerChaveRecursivoB(arvore, arvore->raiz, chave, contador);
 }
 

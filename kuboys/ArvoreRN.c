@@ -57,7 +57,7 @@ NoRN* adicionarNoRN(ArvoreRN* arvore, NoRN* no, int valor, long int* contador) {
 }
 
 NoRN* adicionarRN(ArvoreRN* arvore, int valor, long int* contador) {
-    printf("Adicionando %d\n", valor);
+    printf("Adicionando %d na Arvore RN\n", valor);
 
     (*contador)++; // INCREMENTO CONTADOR
     if (vaziaRN(arvore, contador)) {
@@ -282,6 +282,7 @@ void balancearRemocaoRN(ArvoreRN* arvore, NoRN* no, long int* contador) {
 
 void removerNoRN(ArvoreRN* arvoreRN, int valor, long int* contador) {
     NoRN* no = localizarRN(arvoreRN, valor, contador);
+    printf("Removendo %d na Arvore RN\n", valor);
 
     (*contador)++; // INCREMENTO CONTADOR
     if (no == NULL || no == arvoreRN->nulo) {
