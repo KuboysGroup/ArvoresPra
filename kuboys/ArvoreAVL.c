@@ -71,79 +71,74 @@ void removerAVL(ArvoreAVL* arvore, int valor, long int* contador) {
 
     printf("Removendo %d na Arvore AVL\n", no->valor);
 
-    // Caso 1: No sem filhos
-    (*contador) += 2; // INCREMENTO CONTADOR
-    if (no->esquerda == NULL && no->direita == NULL) {
-
+    (*contador)++; // INCREMENTO CONTADOR
+    while (no != NULL) {
         (*contador)++; // INCREMENTO CONTADOR
-        if (no->pai == NULL) {
-            arvore->raiz = NULL;
-        } else {
+
+        (*contador) += 2; // INCREMENTO CONTADOR
+        if (no->esquerda == NULL && no->direita == NULL) {
 
             (*contador)++; // INCREMENTO CONTADOR
-            if (no->pai->esquerda == no) {
-                no->pai->esquerda = NULL;
+            if (no->pai == NULL) {
+                arvore->raiz = NULL;
             } else {
-                no->pai->direita = NULL;
+
+                (*contador)++; // INCREMENTO CONTADOR
+                if (no->pai->esquerda == no) {
+                    no->pai->esquerda = NULL;
+                } else {
+                    no->pai->direita = NULL;
+                }
             }
-        }
 
-        free(no);
-    }
-    // Caso 2: No com um unico filho
-    else if (no->esquerda != NULL && no->direita == NULL || no->direita != NULL && no->esquerda == NULL) {
-        (*contador) += 4; // INCREMENTO CONTADOR
+            free(no);
+            break;
 
-        (*contador)++; // INCREMENTO CONTADOR
-        NoAVL* filho = (no->esquerda != NULL) ? no->esquerda : no->direita;
-        filho->pai = no->pai;
+        } else if (no->esquerda != NULL && no->direita != NULL) {
+            (*contador) += 2; // INCREMENTO CONTADOR
 
-        (*contador)++; // INCREMENTO CONTADOR
-        if (no->pai == NULL) {
-            arvore->raiz = filho;
-        } else {
+            NoAVL* sucessor = no->direita;
 
             (*contador)++; // INCREMENTO CONTADOR
-            if (no->pai->esquerda == no) {
-                no->pai->esquerda = filho;
+            while (sucessor->esquerda != NULL) {
+                (*contador)++; // INCREMENTO CONTADOR
+
+                sucessor = sucessor->esquerda;
+            }
+
+            no->valor = sucessor->valor;
+            no = sucessor;
+
+        } else {
+            (*contador) += 2; // INCREMENTO CONTADOR
+
+            (*contador)++; // INCREMENTO CONTADOR
+            NoAVL* filho  = (no->esquerda != NULL) ? no->esquerda : no->direita;
+            filho->pai = no->pai;
+
+            (*contador)++; // INCREMENTO CONTADOR
+            if (no->pai == NULL) {
+                arvore->raiz = filho;
+                
             } else {
-                no->pai->direita = filho;
+
+                (*contador)++; // INCREMENTO CONTADOR
+                if (no->pai->esquerda == no) {
+                    no->pai->esquerda = filho;
+                } else {
+                    no->pai->direita = filho;
+                }
             }
+
+            free(no);
+            break;
         }
-
-        free(no);
-    }
-    // Caso 3: No com dois filhos
-    else {
-        (*contador) += 4; // INCREMENTO CONTADOR
-
-        NoAVL* sucessor = no->direita;
-
-        (*contador)++; // INCREMENTO CONTADOR
-        while (sucessor->esquerda != NULL) {
-            (*contador)++; // INCREMENTO CONTADOR
-
-            sucessor = sucessor->esquerda;
-        }
-
-        no->valor = sucessor->valor;
-
-        (*contador)++; // INCREMENTO CONTADOR
-        if (sucessor->pai->esquerda == sucessor) {
-            sucessor->pai->esquerda = sucessor->direita;
-        } else {
-            sucessor->pai->direita = sucessor->direita;
-        }
-
-        (*contador)++; // INCREMENTO CONTADOR
-        if (sucessor->direita != NULL) {
-            sucessor->direita->pai = sucessor->pai;
-        }
-
-        free(sucessor);
     }
 
-    balanceamentoAVL(arvore, arvore->raiz, contador);
+    (*contador)++; // INCREMENTO CONTADOR
+    if (no != NULL) {
+        balanceamentoAVL(arvore, arvore->raiz, contador);
+    }
 }
 
 void balanceamentoAVL(ArvoreAVL* arvore, NoAVL* no, long int* contador) {
