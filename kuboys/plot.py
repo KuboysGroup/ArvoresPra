@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Carregar os dados do CSV
-df = pd.read_csv("resultado_teste_avl.csv")
+df = pd.read_csv("resultado.csv")
 
 # Agrupar e calcular a média do custo de operação por estrutura, operação e quantidade de parâmetros
 agrupado = df.groupby(['Nome Arvore', 'Nome Operacao', 'Quantidade Parametros'])['Custo Operacao'].mean().reset_index()

@@ -17,7 +17,7 @@ void gerarConjuntoAleatorio(int* conjunto, int tamanho) {
 int main() {
     srand(time(NULL));
 
-    FILE* arquivoSaida = fopen("resultado_teste_avl.csv", "w");
+    FILE* arquivoSaida = fopen("resultado.csv", "w");
 
     if (!arquivoSaida) {
         printf("Erro ao abrir arquivo de saída.\n");
@@ -100,6 +100,6 @@ int main() {
 
     fclose(arquivoSaida);
 
-    printf("Resultados salvos em 'resultado_teste_avl.csv'.\n");
+    printf("Resultados salvos em 'resultado.csv'.\n");
     return 0;
 }
