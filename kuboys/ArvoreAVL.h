@@ -1,32 +1,38 @@
-typedef struct no {
-    struct no* pai;
-    struct no* esquerda;
-    struct no* direita;
+typedef struct NoAVL {
+    struct NoAVL* pai;
+    struct NoAVL* esquerda;
+    struct NoAVL* direita;
     int valor;
     int altura;
 } NoAVL;
 
-typedef struct arvore {
-    struct no* raiz;
+typedef struct ArvoreAVL {
+    NoAVL* raiz;
 } ArvoreAVL;
 
-
-
-void balanceamento(ArvoreAVL*, NoAVL*, long int* contador);
-int altura(NoAVL*, long int* contador);
-int fb(NoAVL*, long int* contador);
-void rsd(ArvoreAVL*, NoAVL*, long int* contador);
-void rse(ArvoreAVL*, NoAVL*, long int* contador);
-void rdd(ArvoreAVL*, NoAVL*, long int* contador);
-void rde(ArvoreAVL*, NoAVL*, long int* contador);
-int maximo(int a, int b, long int* contador);
+// Funções básicas
 ArvoreAVL* criarArvoreAVL();
-int vazia(ArvoreAVL* arvore, long int* contador);
-void adicionar(ArvoreAVL* arvore, int valor, long int* contador);
-void remover(ArvoreAVL* arvore, int valor, long int* contador);
-NoAVL* localizar(NoAVL* no, int valor, long int* contador);
-void percorrer(NoAVL* no, void (*callback)(int), long int* contador);
-void visitar(int valor);
-//trocar pra struct, usando só uma função
-int obterAdicoesArvoreAvl(int* vet, int ordem);
-int obterRemocoesArvoreAvl(int* vet, int ordem);
+int vaziaAVL(ArvoreAVL* arvore, long int* contador);
+int alturaAVL(NoAVL* no, long int* contador);
+int maximoAVL(int a, int b, long int* contador);
+int fbAVL(NoAVL* no, long int* contador);
+
+// Funções de balanceamento
+void balanceamentoAVL(ArvoreAVL* arvore, NoAVL* no, long int* contador);
+void rsdAVL(ArvoreAVL* arvore, NoAVL* no, long int* contador);
+void rseAVL(ArvoreAVL* arvore, NoAVL* no, long int* contador);
+void rddAVL(ArvoreAVL* arvore, NoAVL* no, long int* contador);
+void rdeAVL(ArvoreAVL* arvore, NoAVL* no, long int* contador);
+
+// Funções de busca
+NoAVL* localizarAVL(NoAVL* no, int valor, long int* contador);
+
+// Funções de inserção
+void adicionarAVL(ArvoreAVL* arvore, int valor, long int* contador);
+
+// Funções de remoção
+void removerAVL(ArvoreAVL* arvore, int valor, long int* contador);
+
+// Funções de travessia
+void percorrerAVL(NoAVL* no, void (*callback)(int), long int* contador);
+void visitarAVL(int valor);

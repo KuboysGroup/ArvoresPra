@@ -52,6 +52,7 @@ NoRN* adicionarNoRN(ArvoreRN* arvore, NoRN* no, int valor, long int* contador) {
 }
 
 NoRN* adicionarRN(ArvoreRN* arvore, int valor, long int* contador) {
+    printf("Adicionando %d\n", valor);
     (*contador)++;
     if (vaziaRN(arvore)) {
         arvore->raiz = criarNoRN(arvore, arvore->nulo, valor);
@@ -75,9 +76,7 @@ NoRN* localizarRN(ArvoreRN* arvore, int valor, long int* contador) {
             if (no->valor == valor) {
                 return no;
             } else {
-                // printf("%d", valor);
                 no = valor < no->valor ? no->esquerda : no->direita;
-                printf("%d", no->valor);
             }
         }
     }
@@ -95,49 +94,70 @@ void percorrerProfundidadeInOrder(ArvoreRN* arvore, NoRN* no, void (*callback)(i
 }
 
 void balancearRN(ArvoreRN* arvore, NoRN* no, long int* contador) {
-    while (no->pai->cor == Vermelho) {
-        (*contador)++;
-        if (no->pai == no->pai->pai->esquerda) {
-            NoRN *tio = no->pai->pai->direita;
-            
-            if (tio->cor == Vermelho) {
-                tio->cor = Preto;
-                no->pai->cor = Preto; 
+    if (no == arvore->nulo || no == NULL) {
+        printf("No atual e NULO. Nao ha nada para balancear.\n");
+        return;
+    }
 
+    printf("Iniciando balanceamento do no com valor %d\n", no->valor);
+    while (no->pai != NULL && no->pai->cor == Vermelho) {
+        (*contador)++;
+        printf("No %d tem pai vermelho (pai: %d)\n", no->valor, no->pai->valor);
+
+        if (no->pai == no->pai->pai->esquerda) {
+            printf("Pai do no %d esta a esquerda do avo (avo: %d)\n", no->valor, no->pai->pai->valor);
+            NoRN *tio = no->pai->pai->direita;
+
+            if (tio->cor == Vermelho) {
+                printf("Tio do no %d (valor: %d) e vermelho\n", no->valor, tio->valor);
+                tio->cor = Preto;
+                no->pai->cor = Preto;
                 no->pai->pai->cor = Vermelho;
                 no = no->pai->pai;
+                printf("Subindo para o avo com valor %d\n", no->valor);
             } else {
                 if (no == no->pai->direita) {
+                    printf("No %d e filho direito\n", no->valor);
                     no = no->pai;
+                    printf("Rotacionando a esquerda no no com valor %d\n", no->valor);
                     rotacionarEsquerda(arvore, no, contador);
                 } else {
-                    no->pai->cor = Preto; 
+                    printf("No %d e filho esquerdo\n", no->valor);
+                    no->pai->cor = Preto;
                     no->pai->pai->cor = Vermelho;
+                    printf("Rotacionando a direita no avo com valor %d\n", no->pai->pai->valor);
                     rotacionarDireita(arvore, no->pai->pai, contador);
                 }
             }
         } else {
+            printf("Pai do no %d esta a direita do avo (avo: %d)\n", no->valor, no->pai->pai->valor);
             NoRN *tio = no->pai->pai->esquerda;
-            
-            if (tio->cor == Vermelho) {
-                tio->cor = Preto;
-                no->pai->cor = Preto; 
 
+            if (tio->cor == Vermelho) {
+                printf("Tio do no %d (valor: %d) e vermelho\n", no->valor, tio->valor);
+                tio->cor = Preto;
+                no->pai->cor = Preto;
                 no->pai->pai->cor = Vermelho;
                 no = no->pai->pai;
+                printf("Subindo para o avo com valor %d\n", no->valor);
             } else {
                 if (no == no->pai->esquerda) {
+                    printf("No %d e filho esquerdo\n", no->valor);
                     no = no->pai;
+                    printf("Rotacionando a direita no no com valor %d\n", no->valor);
                     rotacionarDireita(arvore, no, contador);
                 } else {
-                    no->pai->cor = Preto; 
+                    printf("No %d e filho direito\n", no->valor);
+                    no->pai->cor = Preto;
                     no->pai->pai->cor = Vermelho;
+                    printf("Rotacionando a esquerda no avo com valor %d\n", no->pai->pai->valor);
                     rotacionarEsquerda(arvore, no->pai->pai, contador);
                 }
             }
         }
     }
     arvore->raiz->cor = Preto;
+    printf("Raiz da arvore atualizada para preto\n");
 }
 
 void rotacionarEsquerda(ArvoreRN* arvore, NoRN* no, long int* contador) {
@@ -291,60 +311,80 @@ void balancearRemocao(ArvoreRN* arvore, NoRN* no, long int* contador) {
 
 
 void removerNo(ArvoreRN* arvoreRN, int valor, long int* contador) {
+    printf("Localizando no com valor %d\n", valor);
     NoRN* no = localizarRN(arvoreRN, valor, contador);
 
-    contador++;
-    if (no != NULL) {
-        while (1) {
-            contador++;
-
-            if (no->esquerda == arvoreRN->nulo && no->direita == arvoreRN->nulo) {
-                contador++;
-
-                if (no->pai == arvoreRN->nulo) {
-                    arvoreRN->raiz = arvoreRN->nulo;
-                } else if (no == no->pai->esquerda) {
-                    no->pai->esquerda = arvoreRN->nulo;
-                } else {
-                    no->pai->direita = arvoreRN->nulo;
-                }
-
-                free(no);
-                break;
-
-            } else if (no->esquerda != arvoreRN->nulo && no->direita != arvoreRN->nulo) {
-                NoRN* sucessor = no->direita;
-
-                contador++;
-
-                while (sucessor->esquerda != arvoreRN->nulo) {
-                    contador++;
-                    sucessor = sucessor->esquerda;
-                }
-
-                no->valor = sucessor->valor;
-                no = sucessor;
-
-            } else {
-                contador++;
-
-                NoRN* filho = (no->esquerda != arvoreRN->nulo) ? no->esquerda : no->direita;
-                filho->pai  = no->pai;
-
-                contador++;
-                if (no->pai == arvoreRN->nulo) {
-                    arvoreRN->raiz = filho;
-                } else if (no == no->pai->esquerda) {
-                    no->pai->esquerda = filho;
-                } else {
-                    no->pai->direita = filho;
-                }
-
-                free(no);
-                break;
-            }
-        }
-
-        balancearRN(arvoreRN, arvoreRN->raiz, contador);
+    if (no == NULL || no == arvoreRN->nulo) {
+        printf("No com valor %d nao encontrado na arvore\n", valor);
+        return;
     }
+
+    printf("Removendo no com valor %d\n", no->valor);
+    (*contador)++;
+
+    while (1) {
+        (*contador)++;
+        printf("Processando no com valor %d\n", no->valor);
+
+        if (no->esquerda == arvoreRN->nulo && no->direita == arvoreRN->nulo) {
+            printf("Caso 1: No folha\n");
+            (*contador)++;
+
+            if (no->pai == arvoreRN->nulo) {
+                printf("Atualizando raiz para NULO\n");
+                arvoreRN->raiz = arvoreRN->nulo;
+            } else if (no == no->pai->esquerda) {
+                printf("Atualizando ponteiro esquerdo do pai\n");
+                no->pai->esquerda = arvoreRN->nulo;
+            } else {
+                printf("Atualizando ponteiro direito do pai\n");
+                no->pai->direita = arvoreRN->nulo;
+            }
+
+            printf("Liberando no com valor %d\n", no->valor);
+            free(no);
+            break;
+
+        } else if (no->esquerda != arvoreRN->nulo && no->direita != arvoreRN->nulo) {
+            printf("Caso 3: No com dois filhos\n");
+            NoRN* sucessor = no->direita;
+
+            (*contador)++;
+            while (sucessor->esquerda != arvoreRN->nulo) {
+                (*contador)++;
+                printf("Buscando sucessor: valor atual %d\n", sucessor->valor);
+                sucessor = sucessor->esquerda;
+            }
+
+            printf("Sucessor encontrado com valor %d\n", sucessor->valor);
+            no->valor = sucessor->valor;
+            no = sucessor;
+
+        } else {
+            printf("Caso 2: No com um filho\n");
+            (*contador)++;
+
+            NoRN* filho = (no->esquerda != arvoreRN->nulo) ? no->esquerda : no->direita;
+            filho->pai = no->pai;
+
+            (*contador)++;
+            if (no->pai == arvoreRN->nulo) {
+                printf("Atualizando raiz para filho com valor %d\n", filho->valor);
+                arvoreRN->raiz = filho;
+            } else if (no == no->pai->esquerda) {
+                printf("Atualizando ponteiro esquerdo do pai\n");
+                no->pai->esquerda = filho;
+            } else {
+                printf("Atualizando ponteiro direito do pai\n");
+                no->pai->direita = filho;
+            }
+
+            printf("Liberando no com valor %d\n", no->valor);
+            free(no);
+            break;
+        }
+    }
+
+    printf("Balanceando a arvore apos remocao\n");
+    balancearRN(arvoreRN, arvoreRN->raiz, contador);
 }
