@@ -13,7 +13,8 @@ ArvoreRN* criarArvoreRN() {
     return arvore;
 }
 
-int vaziaRN(ArvoreRN* arvore) {
+int vaziaRN(ArvoreRN* arvore, long int* contador) {
+    (*contador)++; // INCREMENTO CONTADOR
     return arvore->raiz == NULL;
 }
 
@@ -29,8 +30,10 @@ NoRN* criarNoRN(ArvoreRN* arvore, NoRN* pai, int valor) {
 }
 
 NoRN* adicionarNoRN(ArvoreRN* arvore, NoRN* no, int valor, long int* contador) {
-    (*contador)++;
+    (*contador)++; // INCREMENTO CONTADOR
     if (valor > no->valor) {
+
+        (*contador)++; // INCREMENTO CONTADOR
         if (no->direita == arvore->nulo) {
             no->direita = criarNoRN(arvore, no, valor);     
             no->direita->cor = Vermelho;       
@@ -40,6 +43,8 @@ NoRN* adicionarNoRN(ArvoreRN* arvore, NoRN* no, int valor, long int* contador) {
             return adicionarNoRN(arvore, no->direita, valor, contador);
         }
     } else {
+
+        (*contador)++; // INCREMENTO CONTADOR
         if (no->esquerda == arvore->nulo) {
             no->esquerda = criarNoRN(arvore, no, valor);
             no->esquerda->cor = Vermelho;
@@ -53,8 +58,9 @@ NoRN* adicionarNoRN(ArvoreRN* arvore, NoRN* no, int valor, long int* contador) {
 
 NoRN* adicionarRN(ArvoreRN* arvore, int valor, long int* contador) {
     printf("Adicionando %d\n", valor);
-    (*contador)++;
-    if (vaziaRN(arvore)) {
+
+    (*contador)++; // INCREMENTO CONTADOR
+    if (vaziaRN(arvore, contador)) {
         arvore->raiz = criarNoRN(arvore, arvore->nulo, valor);
         arvore->raiz->cor = Preto;
         		
@@ -68,14 +74,20 @@ NoRN* adicionarRN(ArvoreRN* arvore, int valor, long int* contador) {
 }
 
 NoRN* localizarRN(ArvoreRN* arvore, int valor, long int* contador) {
-    (*contador)++;
-    if (!vaziaRN(arvore)) {
+    (*contador)++; // INCREMENTO CONTADOR
+    if (!vaziaRN(arvore, contador)) {
         NoRN* no = arvore->raiz;
+
+        (*contador)++; // INCREMENTO CONTADOR
         while (no != arvore->nulo) {
-            (*contador)++;
+            (*contador)++; // INCREMENTO CONTADOR
+
+            (*contador)++; // INCREMENTO CONTADOR
             if (no->valor == valor) {
                 return no;
             } else {
+
+                (*contador)++; // INCREMENTO CONTADOR
                 no = valor < no->valor ? no->esquerda : no->direita;
             }
         }
@@ -84,98 +96,97 @@ NoRN* localizarRN(ArvoreRN* arvore, int valor, long int* contador) {
     return NULL;
 }
 
-void percorrerProfundidadeInOrder(ArvoreRN* arvore, NoRN* no, void (*callback)(int), long int* contador) {
+void percorrerProfundidadeInOrderRN(ArvoreRN* arvore, NoRN* no, void (*callback)(int), long int* contador) {
+
+    (*contador)++; // INCREMENTO CONTADOR
     if (no != arvore->nulo) {
-        (*contador)++;
-        percorrerProfundidadeInOrder(arvore, no->esquerda, callback, contador);
+        percorrerProfundidadeInOrderRN(arvore, no->esquerda, callback, contador);
         callback(no->valor);
-        percorrerProfundidadeInOrder(arvore, no->direita, callback, contador);
+        percorrerProfundidadeInOrderRN(arvore, no->direita, callback, contador);
     }
 }
 
 void balancearRN(ArvoreRN* arvore, NoRN* no, long int* contador) {
+
+    (*contador)++; // INCREMENTO CONTADOR
     if (no == arvore->nulo || no == NULL) {
-        printf("No atual e NULO. Nao ha nada para balancear.\n");
         return;
     }
 
-    printf("Iniciando balanceamento do no com valor %d\n", no->valor);
+    (*contador)++; // INCREMENTO CONTADOR
     while (no->pai != NULL && no->pai->cor == Vermelho) {
-        (*contador)++;
-        printf("No %d tem pai vermelho (pai: %d)\n", no->valor, no->pai->valor);
+        (*contador)++; // INCREMENTO CONTADOR
 
+        (*contador)++; // INCREMENTO CONTADOR
         if (no->pai == no->pai->pai->esquerda) {
-            printf("Pai do no %d esta a esquerda do avo (avo: %d)\n", no->valor, no->pai->pai->valor);
             NoRN *tio = no->pai->pai->direita;
 
+            (*contador)++; // INCREMENTO CONTADOR
             if (tio->cor == Vermelho) {
-                printf("Tio do no %d (valor: %d) e vermelho\n", no->valor, tio->valor);
                 tio->cor = Preto;
                 no->pai->cor = Preto;
                 no->pai->pai->cor = Vermelho;
                 no = no->pai->pai;
-                printf("Subindo para o avo com valor %d\n", no->valor);
             } else {
+
+                (*contador)++; // INCREMENTO CONTADOR
                 if (no == no->pai->direita) {
-                    printf("No %d e filho direito\n", no->valor);
                     no = no->pai;
-                    printf("Rotacionando a esquerda no no com valor %d\n", no->valor);
-                    rotacionarEsquerda(arvore, no, contador);
+                    rotacionarEsquerdaRN(arvore, no, contador);
                 } else {
-                    printf("No %d e filho esquerdo\n", no->valor);
                     no->pai->cor = Preto;
                     no->pai->pai->cor = Vermelho;
-                    printf("Rotacionando a direita no avo com valor %d\n", no->pai->pai->valor);
-                    rotacionarDireita(arvore, no->pai->pai, contador);
+                    rotacionarDireitaRN(arvore, no->pai->pai, contador);
                 }
             }
         } else {
-            printf("Pai do no %d esta a direita do avo (avo: %d)\n", no->valor, no->pai->pai->valor);
             NoRN *tio = no->pai->pai->esquerda;
 
+            (*contador)++; // INCREMENTO CONTADOR
             if (tio->cor == Vermelho) {
-                printf("Tio do no %d (valor: %d) e vermelho\n", no->valor, tio->valor);
                 tio->cor = Preto;
                 no->pai->cor = Preto;
                 no->pai->pai->cor = Vermelho;
                 no = no->pai->pai;
-                printf("Subindo para o avo com valor %d\n", no->valor);
             } else {
+
+                (*contador)++; // INCREMENTO CONTADOR
                 if (no == no->pai->esquerda) {
-                    printf("No %d e filho esquerdo\n", no->valor);
                     no = no->pai;
-                    printf("Rotacionando a direita no no com valor %d\n", no->valor);
-                    rotacionarDireita(arvore, no, contador);
+                    rotacionarDireitaRN(arvore, no, contador);
                 } else {
-                    printf("No %d e filho direito\n", no->valor);
                     no->pai->cor = Preto;
                     no->pai->pai->cor = Vermelho;
-                    printf("Rotacionando a esquerda no avo com valor %d\n", no->pai->pai->valor);
-                    rotacionarEsquerda(arvore, no->pai->pai, contador);
+                    rotacionarEsquerdaRN(arvore, no->pai->pai, contador);
                 }
             }
         }
     }
     arvore->raiz->cor = Preto;
-    printf("Raiz da arvore atualizada para preto\n");
 }
 
-void rotacionarEsquerda(ArvoreRN* arvore, NoRN* no, long int* contador) {
-    (*contador)++;
+void rotacionarEsquerdaRN(ArvoreRN* arvore, NoRN* no, long int* contador) {
+
     NoRN* direita = no->direita;
     no->direita = direita->esquerda; 
 
+    (*contador)++; // INCREMENTO CONTADOR
     if (direita->esquerda != arvore->nulo) {
         direita->esquerda->pai = no;
     }
 
     direita->pai = no->pai;
     
+    (*contador)++; // INCREMENTO CONTADOR
     if (no->pai == arvore->nulo) {
         arvore->raiz = direita;
     } else if (no == no->pai->esquerda) {
+        (*contador)++; // INCREMENTO CONTADOR
+
         no->pai->esquerda = direita;
     } else {
+        (*contador)++; // INCREMENTO CONTADOR
+
         no->pai->direita = direita;
     }
 
@@ -183,22 +194,27 @@ void rotacionarEsquerda(ArvoreRN* arvore, NoRN* no, long int* contador) {
     no->pai = direita;
 }
 
-void rotacionarDireita(ArvoreRN* arvore, NoRN* no, long int* contador) {
-    (*contador)++;
+void rotacionarDireitaRN(ArvoreRN* arvore, NoRN* no, long int* contador) {
     NoRN* esquerda = no->esquerda;
     no->esquerda = esquerda->direita;
     
+    (*contador)++; // INCREMENTO CONTADOR
     if (esquerda->direita != arvore->nulo) {
         esquerda->direita->pai = no;
     }
     
     esquerda->pai = no->pai;
     
+    (*contador)++; // INCREMENTO CONTADOR
     if (no->pai == arvore->nulo) {
         arvore->raiz = esquerda;
     } else if (no == no->pai->esquerda) {
+        (*contador)++; // INCREMENTO CONTADOR
+        
         no->pai->esquerda = esquerda;
     } else {
+        (*contador)++; // INCREMENTO CONTADOR
+
         no->pai->direita = esquerda;
     }
     
@@ -206,185 +222,128 @@ void rotacionarDireita(ArvoreRN* arvore, NoRN* no, long int* contador) {
     no->pai = esquerda;
 }
 
-void balancearRemocao(ArvoreRN* arvore, NoRN* no, long int* contador) {
+void balancearRemocaoRN(ArvoreRN* arvore, NoRN* no, long int* contador) {
+
+    (*contador)++; // INCREMENTO CONTADOR
     while (no != arvore->raiz && no->cor == Preto) {
-        (*contador)++;  // Conta a comparação entre o nó e a raiz
+        (*contador)++; // INCREMENTO CONTADOR
         
+        (*contador)++; // INCREMENTO CONTADOR
         if (no == no->pai->esquerda) {
             NoRN* tio = no->pai->pai->direita;
-            (*contador)++;  // Conta a comparação do tio com o nó do lado direito
 
+            (*contador)++; // INCREMENTO CONTADOR
             if (tio->cor == Vermelho) {
-                (*contador)++;  // Conta a comparação da cor do tio
                 // Caso 1: Tio é vermelho
                 tio->cor = Preto;
                 no->pai->cor = Preto;
                 no->pai->pai->cor = Vermelho;
                 no = no->pai->pai;
             } else {
-                (*contador)++;  // Conta a comparação da cor do tio
                 // Caso 2: Tio é preto
+                (*contador)++; // INCREMENTO CONTADOR
                 if (no == no->pai->direita) {
-                    (*contador)++;  // Conta a comparação do nó com a direção direita
                     no = no->pai;
-                    rotacionarEsquerda(arvore, no, contador);
+                    rotacionarEsquerdaRN(arvore, no, contador);
                 }
 
                 no->pai->cor = Preto;
                 no->pai->pai->cor = Vermelho;
-                rotacionarDireita(arvore, no->pai->pai, contador);
+                rotacionarDireitaRN(arvore, no->pai->pai, contador);
             }
         } else {
             NoRN* tio = no->pai->pai->esquerda;
-            (*contador)++;  // Conta a comparação do tio com o nó do lado esquerdo
 
+            (*contador)++; // INCREMENTO CONTADOR
             if (tio->cor == Vermelho) {
-                (*contador)++;  // Conta a comparação da cor do tio
                 // Caso 1: Tio é vermelho
                 tio->cor = Preto;
                 no->pai->cor = Preto;
                 no->pai->pai->cor = Vermelho;
                 no = no->pai->pai;
             } else {
-                (*contador)++;  // Conta a comparação da cor do tio
                 // Caso 2: Tio é preto
+
+                (*contador)++; // INCREMENTO CONTADOR
                 if (no == no->pai->esquerda) {
-                    (*contador)++;  // Conta a comparação do nó com a direção esquerda
                     no = no->pai;
-                    rotacionarDireita(arvore, no, contador);
+                    rotacionarDireitaRN(arvore, no, contador);
                 }
 
                 no->pai->cor = Preto;
                 no->pai->pai->cor = Vermelho;
-                rotacionarEsquerda(arvore, no->pai->pai, contador);
+                rotacionarEsquerdaRN(arvore, no->pai->pai, contador);
             }
         }
     }
 
-    no->cor = Preto; // O nó raiz deve ser sempre preto
+    no->cor = Preto;
 }
 
-
-// NoRN* removerNo(ArvoreRN* arvore, NoRN* no, int valor, long int* contador) {
-//     NoRN* substituto;
-
-//     if (no->esquerda == arvore->nulo || no->direita == arvore->nulo) {
-//         substituto = no;
-//     } else {
-//         substituto = no->direita;
-//         while (substituto->esquerda != arvore->nulo) {
-//             (*contador)++;  // Conta a comparação entre a esquerda do substituto e o nulo
-//             substituto = substituto->esquerda;
-//         }
-//     }
-
-//     NoRN* filho = substituto->esquerda != arvore->nulo ? substituto->esquerda : substituto->direita;
-
-//     // Conectar o filho ao pai do nó substituído
-//     filho->pai = substituto->pai;
-
-//     if (substituto->pai == arvore->nulo) {
-//         arvore->raiz = filho; // Se for raiz, filho se torna a nova raiz
-//     } else {
-//         if (substituto == substituto->pai->esquerda) {
-//             (*contador)++;  // Conta a comparação entre o substituto e o pai esquerdo
-//             substituto->pai->esquerda = filho;
-//         } else {
-//             (*contador)++;  // Conta a comparação entre o substituto e o pai direito
-//             substituto->pai->direita = filho;
-//         }
-//     }
-
-//     if (substituto != no) {
-//         (*contador)++;  // Conta a comparação entre o nó e o substituto
-//         no->valor = substituto->valor; // Substituir valor
-//     }
-
-//     // Se o substituto for preto, balanceia a árvore
-//     if (substituto->cor == Preto) {
-//         balancearRemocao(arvore, filho, contador);
-//     }
-
-//     free(substituto);
-//     return filho;
-// }
-
-
-void removerNo(ArvoreRN* arvoreRN, int valor, long int* contador) {
-    printf("Localizando no com valor %d\n", valor);
+void removerNoRN(ArvoreRN* arvoreRN, int valor, long int* contador) {
     NoRN* no = localizarRN(arvoreRN, valor, contador);
 
+    (*contador)++; // INCREMENTO CONTADOR
     if (no == NULL || no == arvoreRN->nulo) {
-        printf("No com valor %d nao encontrado na arvore\n", valor);
         return;
     }
 
-    printf("Removendo no com valor %d\n", no->valor);
-    (*contador)++;
-
     while (1) {
-        (*contador)++;
-        printf("Processando no com valor %d\n", no->valor);
 
+        (*contador) += 3; // INCREMENTO CONTADOR
         if (no->esquerda == arvoreRN->nulo && no->direita == arvoreRN->nulo) {
-            printf("Caso 1: No folha\n");
-            (*contador)++;
 
+            (*contador)++; // INCREMENTO CONTADOR
             if (no->pai == arvoreRN->nulo) {
-                printf("Atualizando raiz para NULO\n");
                 arvoreRN->raiz = arvoreRN->nulo;
             } else if (no == no->pai->esquerda) {
-                printf("Atualizando ponteiro esquerdo do pai\n");
+                (*contador)++; // INCREMENTO CONTADOR
+
                 no->pai->esquerda = arvoreRN->nulo;
             } else {
-                printf("Atualizando ponteiro direito do pai\n");
+                (*contador)++; // INCREMENTO CONTADOR
+
                 no->pai->direita = arvoreRN->nulo;
             }
 
-            printf("Liberando no com valor %d\n", no->valor);
             free(no);
             break;
 
         } else if (no->esquerda != arvoreRN->nulo && no->direita != arvoreRN->nulo) {
-            printf("Caso 3: No com dois filhos\n");
+            (*contador) += 3; // INCREMENTO CONTADOR
+
             NoRN* sucessor = no->direita;
 
-            (*contador)++;
+            (*contador)++; // INCREMENTO CONTADOR
             while (sucessor->esquerda != arvoreRN->nulo) {
-                (*contador)++;
-                printf("Buscando sucessor: valor atual %d\n", sucessor->valor);
+                (*contador)++; // INCREMENTO CONTADOR
+
                 sucessor = sucessor->esquerda;
             }
 
-            printf("Sucessor encontrado com valor %d\n", sucessor->valor);
             no->valor = sucessor->valor;
             no = sucessor;
-
         } else {
-            printf("Caso 2: No com um filho\n");
-            (*contador)++;
-
             NoRN* filho = (no->esquerda != arvoreRN->nulo) ? no->esquerda : no->direita;
             filho->pai = no->pai;
 
-            (*contador)++;
+            (*contador)++; // INCREMENTO CONTADOR
             if (no->pai == arvoreRN->nulo) {
-                printf("Atualizando raiz para filho com valor %d\n", filho->valor);
                 arvoreRN->raiz = filho;
             } else if (no == no->pai->esquerda) {
-                printf("Atualizando ponteiro esquerdo do pai\n");
+                (*contador)++; // INCREMENTO CONTADOR
+
                 no->pai->esquerda = filho;
             } else {
-                printf("Atualizando ponteiro direito do pai\n");
+                (*contador)++; // INCREMENTO CONTADOR
+
                 no->pai->direita = filho;
             }
 
-            printf("Liberando no com valor %d\n", no->valor);
             free(no);
             break;
         }
     }
 
-    printf("Balanceando a arvore apos remocao\n");
     balancearRN(arvoreRN, arvoreRN->raiz, contador);
 }

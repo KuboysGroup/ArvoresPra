@@ -78,7 +78,7 @@ int main() {
             long int contadorTotalRemocaoB10 = 0, custoOperacaoRemocaoB10 = 0;
 
             removerAVL(arvoreAVL, conjunto[i], &custoOperacaoRemocaoAVL);
-            removerNo(arvoreRN, conjunto[i], &custoOperacaoRemocaoRN);
+            removerNoRN(arvoreRN, conjunto[i], &custoOperacaoRemocaoRN);
             removerChaveB(arvoreB1, conjunto[i], &custoOperacaoRemocaoB1);
             removerChaveB(arvoreB5, conjunto[i], &custoOperacaoRemocaoB5);
             removerChaveB(arvoreB10, conjunto[i], &custoOperacaoRemocaoB10);
