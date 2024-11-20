@@ -308,8 +308,6 @@ NoAVL* localizarAVL(NoAVL* no, int valor, long int* contador) {
         if (no->valor == valor) {
             return no;
         }
-        
-        contador++;
 
         (*contador)++; // INCREMENTO CONTADOR
         no = valor < no->valor ? no->esquerda : no->direita;
